@@ -1,0 +1,42 @@
+service: milia-api
+
+plugins:
+  - serverless-plugin-warmup
+
+custom: 
+  warmup:
+    folderName: '_warmup'
+    cleanFolder: false
+    memorySize: 256
+    name: '${self:service}-${self:provider.stage}-warmup-lambdas'
+    timeout: 20
+    prewarm: true
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  profile: dev
+  stage: dev
+  region: us-east-1
+  memorySIze: 128
+  timeout: 10
+
+iamRoleStatements:
+- Effect: 'Allow'
+  Action:
+    - 'lambda:InvokeFunction'
+  Resource: "*"
+
+environment:
+  variable1: value1
+
+functions:
+  hello:
+    handler: src/handlers/index.handler
+    warmup: true
+    description: 'Olá mundo'
+    events:
+      - http:
+          path: /hello-world
+          method: get
+          cors: true

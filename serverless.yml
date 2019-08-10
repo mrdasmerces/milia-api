@@ -9,7 +9,7 @@ custom:
     cleanFolder: false
     memorySize: 256
     name: '${self:service}-${self:provider.stage}-warmup-lambdas'
-    timeout: 20
+    timeout: 10
     prewarm: true
 
 provider:

@@ -54,6 +54,7 @@ const handler = async (event, context, callback) => {
 
   } catch(e) {
     const errorMessage = await ErrorHandler(e, event, context);
+    console.log(errorMessage);
     return callback(null, errorMessage);
   }
 

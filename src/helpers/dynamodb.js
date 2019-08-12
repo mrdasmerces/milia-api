@@ -44,7 +44,7 @@ class AwsHelper {
     try {
       await AwsHelper.dynamodb.put(params).promise();
     } catch (error) {
-      throw new DbConnectionError();
+      throw new DbConnectionError(error.message);
     }
 
     return obj;
@@ -56,7 +56,7 @@ class AwsHelper {
     try {
       await AwsHelper.dynamodb.update(params).promise();
     } catch (error) {
-      throw new DbConnectionError();
+      throw new DbConnectionError(error.message);
     }
 
     return params;
@@ -78,7 +78,7 @@ class AwsHelper {
     try {
       item = await AwsHelper.dynamodb.get(params).promise();
     } catch (error) {
-      throw new DbConnectionError();
+      throw new DbConnectionError(error.message);
     }
 
     if (item == null || item.Item == null) {

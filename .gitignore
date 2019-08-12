@@ -6,3 +6,8 @@ jspm_packages
 .serverless
 
 _warmup
+
+.vscode
+.env
+
+package-lock.json

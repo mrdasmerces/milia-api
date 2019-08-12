@@ -1,0 +1,14 @@
+Resources:
+  users:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:service}-${self:provider.stage}-users
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S               
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1

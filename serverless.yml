@@ -15,28 +15,35 @@ custom:
 provider:
   name: aws
   runtime: nodejs10.x
-  profile: dev
-  stage: dev
+  profile: ${self:provider.stage}
+  stage: ${opt:stage, 'dev'}
   region: us-east-1
-  memorySIze: 128
+  memorySize: 128
   timeout: 10
+  environment:
+    SECRET_TOKEN: latheus
+    REGION: ${self:provider.region}
+    SERVERLESS_SERVICE: ${self:service}
+    STAGE: ${self:provider.stage}
 
 iamRoleStatements:
 - Effect: 'Allow'
   Action:
     - 'lambda:InvokeFunction'
   Resource: "*"
+- Effect: Allow
+  Action:
+    - dynamodb:DescribeTable
+    - dynamodb:Query
+    - dynamodb:Scan
+    - dynamodb:GetItem
+    - dynamodb:PutItem
+    - dynamodb:UpdateItem
+    - dynamodb:DeleteItem
+  Resource: "*"
 
-environment:
-  variable1: value1
+resources:
+  - ${file(src/dynamodb.yml)}
 
 functions:
-  hello:
-    handler: src/handlers/index.handler
-    warmup: true
-    description: 'Olá mundo'
-    events:
-      - http:
-          path: /hello-world
-          method: get
-          cors: true
+  - ${file(src/functions.yml)}

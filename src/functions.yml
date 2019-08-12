@@ -1,0 +1,9 @@
+authenticate:
+  functionName: ${self:service}-${self:provider.stage}-authenticate
+  handler: src/handlers/authenticate.handler
+  warmup: true
+  events:
+    - http:
+        path: /authenticate
+        method: post
+        cors: true

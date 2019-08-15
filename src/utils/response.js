@@ -4,7 +4,7 @@ const build = (statusCode, body) => ({
     'Access-Control-Allow-Credentials': true
   },
   statusCode,
-  body
+  body: JSON.stringify(body),
 });
 
 const success = body => build(200, body);

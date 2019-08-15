@@ -2,6 +2,7 @@ service: milia-api
 
 plugins:
   - serverless-plugin-warmup
+  - serverless-offline
 
 custom: 
   warmup:

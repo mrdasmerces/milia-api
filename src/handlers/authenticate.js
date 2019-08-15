@@ -24,7 +24,7 @@ const handler = async (event, context, callback) => {
   }
 
   try {
-    const { username, password } = event.body;
+    const { username, password } = JSON.parse(event.body);
 
     if (!username) {
       throw new MissingParamsError(messages.user.missingUsernameParamError);

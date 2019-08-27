@@ -33,7 +33,7 @@ const handler = async (event, context, callback) => {
     const sessionId = uuid.v4();
   
     const sessionClient = new dialogflow.SessionsClient();
-    const sessionPath = sessionClient.sessionPath('translate-2-kgnsoy', sessionId);
+    const sessionPath = sessionClient.sessionPath(process.env.DIALOGFLOW_PROJECT_ID, sessionId);
   
     const request = {
       session: sessionPath,

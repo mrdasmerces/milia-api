@@ -2,13 +2,13 @@
 
 const EmergencyIntent = async (result, paramsUser) => {
 
-  let dialogflowResult = {};
+  const dialogflowResult = [];
 
   try {
-    dialogflowResult.response = 'Testezao emergency'
+    dialogflowResult.push({text: 'EmergencyIntent'});
   } catch(e) {
     console.log(e);
-    dialogflowResult.response = 'Desculpe, não consegui te ajudar agora :( Pode repetir por favor?'
+    dialogflowResult.push({text: 'Desculpe, não consegui te ajudar agora :( Pode repetir por favor?'});
   }
   
   return dialogflowResult;

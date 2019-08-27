@@ -22,7 +22,7 @@ const handler = async (event, context, callback) => {
   }
 
   try {
-    let dialogflowResult = {};
+    let dialogflowResult = [];
 
     const { queryText, paramsUser } = JSON.parse(event.body);
 
@@ -49,10 +49,23 @@ const handler = async (event, context, callback) => {
     const result = responses[0].queryResult;
   
     if (result.intent) {
-      dialogflowResult = await chatbotHandlers[result.intent.displayName](result, paramsUser);
+      const newMessages = await chatbotHandlers[result.intent.displayName](result, paramsUser);
+      dialogflowResult = newMessages;
     } else {
-      dialogflowResult.response = 'Hum, não entendi, pode reformular sua frase? :)'
+      dialogflowResult.push({text: 'Hum, não entendi, pode reformular sua frase? :)'});
     }
+
+    dialogflowResult = dialogflowResult.map(m => ({
+      ...m,
+      _id: uuid.v4(),
+      createdAt: new Date(),
+      image: 'https://marketingcomcafe.com.br/wp-content/uploads/2017/12/banco-imagens-gratis.png',
+      user: {
+        _id: 2,
+        name: 'Milia',
+        avatar: 'https://placeimg.com/140/140/any',
+      },
+    }));
 
     return callback(null, success({ dialogflowResult }));
 

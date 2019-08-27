@@ -2,13 +2,13 @@
 
 const FoodIntent = async (result, paramsUser) => {
 
-  let dialogflowResult = {};
+  const dialogflowResult = [];
 
   try {
-    dialogflowResult.response = 'Testezao food'
+    dialogflowResult.push({text: 'FoodIntent'});
   } catch(e) {
     console.log(e);
-    dialogflowResult.response = 'Desculpe, não consegui te ajudar agora :( Pode repetir por favor?'
+    dialogflowResult.push({text: 'Desculpe, não consegui te ajudar agora :( Pode repetir por favor?'});
   }
   
   return dialogflowResult;

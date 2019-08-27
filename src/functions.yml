@@ -7,3 +7,13 @@ authenticate:
         path: /authenticate
         method: post
         cors: true
+
+ask-milia:
+  functionName: ${self:service}-${self:provider.stage}-ask-milia
+  handler: src/handlers/askMilia.handler
+  warmup: true
+  events:
+    - http:
+        path: /ask-milia
+        method: post
+        cors: true        

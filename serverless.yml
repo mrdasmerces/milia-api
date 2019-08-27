@@ -26,6 +26,7 @@ provider:
     REGION: ${self:provider.region}
     SERVERLESS_SERVICE: ${self:service}
     STAGE: ${self:provider.stage}
+    GOOGLE_APPLICATION_CREDENTIALS: "./src/credentials/google.json"
   iamRoleStatements:
   - Effect: Allow
     Action:

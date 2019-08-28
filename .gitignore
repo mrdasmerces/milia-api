@@ -5,9 +5,6 @@ jspm_packages
 # Serverless directories
 .serverless
 
-_warmup
-
-.vscode
 .env
 
 package-lock.json

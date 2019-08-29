@@ -8,7 +8,7 @@ const PlacesIntent = async (result, paramsUser) => {
 
   try {
     const type = result.parameters.fields['PLACES'].stringValue;
-    const lastUserLocation = paramsUser.lastPosition;
+    const lastUserLocation = JSON.parse(paramsUser.lastPosition);
 
     const locations = await placesService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude, type);
 

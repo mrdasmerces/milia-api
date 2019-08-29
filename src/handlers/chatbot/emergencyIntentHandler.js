@@ -9,7 +9,7 @@ const EmergencyIntent = async (result, paramsUser) => {
 
   try {
 
-    const lastUserLocation = paramsUser.lastPosition;
+    const lastUserLocation = JSON.parse(paramsUser.lastPosition);
     const address = await addressService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude);
 
     let countryCode = '';

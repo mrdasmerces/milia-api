@@ -24,7 +24,7 @@ const PlacesIntent = async (result, paramsUser) => {
     for(const location of locations.data.results) {
       dialogflowResult.push({
         text: `${location.name} - ${location.vicinity}`,
-        image: `${location.icon}`,
+        image: 'https://placeimg.com/274/274/arch',
         place_id: `${location.place_id}`,
         quickReplies: {
           type: 'radio',

@@ -1,6 +1,6 @@
 'use strict';
 
-const Attractions = require('./attractionsHandler');
+const AttractionsIntent = require('./attractionsIntentHandler');
 const EmergencyIntent = require('./emergencyIntentHandler');
 const ExchangeIntent = require('./exchangeIntentHandler');
 const FoodIntent = require('./foodIntentHandler');
@@ -8,7 +8,7 @@ const LanguageIntent = require('./languageIntentHandler');
 const PlacesIntent = require('./placesIntentHandler');
 
 module.exports = {
-  Attractions,
+  AttractionsIntent,
   EmergencyIntent,
   ExchangeIntent,
   FoodIntent,

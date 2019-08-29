@@ -52,14 +52,13 @@ const handler = async (event, context, callback) => {
       const newMessages = await chatbotHandlers[result.intent.displayName](result, paramsUser);
       dialogflowResult = newMessages;
     } else {
-      dialogflowResult.push({text: 'Hum, não entendi, pode reformular sua frase? :)'});
+      dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
     }
 
     dialogflowResult = dialogflowResult.map(m => ({
       ...m,
       _id: uuid.v4(),
       createdAt: new Date(),
-      image: 'https://marketingcomcafe.com.br/wp-content/uploads/2017/12/banco-imagens-gratis.png',
       user: {
         _id: 2,
         name: 'Milia',

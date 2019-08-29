@@ -46,10 +46,10 @@ const FoodIntent = async (result, paramsUser) => {
         values: [
           {
             title: 'Nhamm! Sim!',
-            value: 'yes',
+            value: 'findAPlace',
           },
           {
-            title: 'Não, estou sem fome agora :( Talvez depois.',
+            title: 'Não, talvez depois.',
             value: 'no',
           },
         ],

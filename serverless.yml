@@ -28,6 +28,7 @@ provider:
     STAGE: ${self:provider.stage}
     GOOGLE_APPLICATION_CREDENTIALS: "./src/credentials/google.json"
     DIALOGFLOW_PROJECT_ID: translate-2-kgnsoy
+    GOOGLE_MAPS_KEY: AIzaSyA1UUQgbp4x8tOCw6_YhUkfgJj5-dfxkhU
   iamRoleStatements:
   - Effect: Allow
     Action:

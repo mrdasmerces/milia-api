@@ -8,13 +8,14 @@ const PlacesIntent = async (result, paramsUser) => {
 
   try {
     const type = result.parameters.fields['PLACES'].stringValue;
+    const keyword = result.parameters.fields['FOOD_TYPE'] ? result.parameters.fields['FOOD_TYPE'].stringValue : '';
     const radius = result.parameters.fields['DISTANCE'].stringValue;
     const minPrice = result.parameters.fields['PRICE'].stringValue[0];
     const maxPrice = result.parameters.fields['PRICE'].stringValue[2];
 
     const lastUserLocation = JSON.parse(paramsUser.lastPosition);
 
-    const locations = await placesService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude, type, radius, minPrice, maxPrice);
+    const locations = await placesService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude, type, radius, minPrice, maxPrice, keyword);
 
     if(!locations.data.results.length) throw new Error('Nenhum lugar aberto agora de acordo com as buscas.');
 

@@ -15,6 +15,34 @@ class AwsHelper {
     return AwsHelper.findById(idKey, idValue, table);
   }
 
+  static async getUserSession(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
+    const idKey = 'accessToken';
+    return AwsHelper.findById(idKey, idValue, table);
+  };
+
+  static async deleteUserSession(accessToken) {
+
+    AwsHelper.dynamodb = AwsHelper.getDynamo();
+    const params = {
+      Key: {
+        accessToken,
+      },
+      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`,
+    };
+
+    try {
+      await AwsHelper.dynamodb.delete(params).promise();
+    } catch (error) {
+      throw new DbConnectionError(error.message);
+    }
+  }
+
+  static async setUserSession(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
+    return AwsHelper.save(table, obj);
+  };  
+
   static async updateUserAccessToken(email, accessToken) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;
     const idKey = 'email';
@@ -82,7 +110,7 @@ class AwsHelper {
     }
 
     if (item == null || item.Item == null) {
-      throw new ItemNotFoundError();
+      return null;
     } else {
       return item.Item;
     }

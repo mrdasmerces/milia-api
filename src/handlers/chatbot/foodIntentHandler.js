@@ -39,7 +39,7 @@ const FoodIntent = async (result, paramsUser) => {
     };
 
     dialogflowResult.push({
-      text: `Que tal achar agora algum restaurante perto de você pra comer alguma dessas delícias?`,
+      text: `Que tal achar agora algum restaurante pra comer alguma dessas delícias?`,
       quickReplies: {
         type: 'radio',
         keepIt: true,
@@ -47,10 +47,14 @@ const FoodIntent = async (result, paramsUser) => {
           {
             title: 'Nhamm! Sim!',
             value: 'findAPlace',
+            function: 'findAPlace',
+            newMessage: 'Quero comer agora!',
           },
           {
             title: 'Não, talvez depois.',
             value: 'no',
+            function: 'findAPlace',
+            newMessage: 'Não, talvez depois.',
           },
         ],
       },

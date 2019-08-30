@@ -12,3 +12,29 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+  sessions:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:service}-${self:provider.stage}-session
+      AttributeDefinitions:
+        - AttributeName: accessToken
+          AttributeType: S               
+      KeySchema:
+        - AttributeName: accessToken
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+  chatMessages:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:service}-${self:provider.stage}-chat-messages
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S               
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1                 

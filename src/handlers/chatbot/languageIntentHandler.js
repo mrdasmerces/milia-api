@@ -11,8 +11,13 @@ const LanguageIntent = async (result) => {
     const languageTo = result.parameters.fields['lang-to'].stringValue.toLowerCase();
     const text = result.parameters.fields['text'].stringValue;
     const target = LANGUAGES[languageTo];
+    let from = 'pt';
 
-    const translation = await translateService(text, target)
+    if(result.parameters.fields['lang-from'].stringValue) {
+      from = LANGUAGES[result.parameters.fields['lang-from'].stringValue];
+    }
+
+    const translation = await translateService(text, target, from)
     dialogflowResult.push({text: `Ótimo! ${text} em ${languageTo} é ${translation}`});
 
   } catch(e) {

@@ -8,14 +8,17 @@ const PlacesIntent = async (result, paramsUser) => {
 
   try {
     const type = result.parameters.fields['PLACES'].stringValue;
+    const radius = result.parameters.fields['DISTANCE'].stringValue;
+    const minPrice = result.parameters.fields['PRICE'].stringValue[0];
+    const maxPrice = result.parameters.fields['PRICE'].stringValue[2];
+
     const lastUserLocation = JSON.parse(paramsUser.lastPosition);
 
-    const locations = await placesService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude, type);
-
-    locations.data.results = locations.data.results.filter(l => l.opening_hours && l.opening_hours.open_now);
-    locations.data.results = locations.data.results.slice(0, 3);
+    const locations = await placesService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude, type, radius, minPrice, maxPrice);
 
     if(!locations.data.results.length) throw new Error('Nenhum lugar aberto agora de acordo com as buscas.');
+
+    locations.data.results = locations.data.results.slice(0, 3);
 
     dialogflowResult.push({
       text: `Perfeito! Veja os lugares mais próximos de você que estão aberto agora:`,
@@ -25,7 +28,6 @@ const PlacesIntent = async (result, paramsUser) => {
       dialogflowResult.push({
         text: `${location.name} - ${location.vicinity}`,
         image: 'https://placeimg.com/274/274/arch',
-        place_id: `${location.place_id}`,
         quickReplies: {
           type: 'radio',
           keepIt: true,
@@ -33,6 +35,8 @@ const PlacesIntent = async (result, paramsUser) => {
             {
               title: 'Ir agora',
               value: 'goToPlace',
+              function: 'goToPlace',
+              place_id: `${location.place_id}`,
             },
           ],
         },

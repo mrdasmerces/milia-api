@@ -9,6 +9,7 @@ const {
 
 const { ErrorHandler }  = require('../utils/error-handling')
 const { success }       = require('../utils/response')
+const DynamoHelper      = require('../helpers/dynamodb')
 
 const chatbotHandlers = require('./chatbot');
 
@@ -22,6 +23,16 @@ const handler = async (event, context, callback) => {
   }
 
   try {
+    let sessionId = '';
+
+    const session = await DynamoHelper.getUserSession(event.headers.accesstoken);
+
+    if(session) {
+      sessionId = session.sessionId;
+    } else {
+      sessionId = uuid.v4();
+    }
+
     let dialogflowResult = [];
 
     const { queryText, paramsUser } = JSON.parse(event.body);
@@ -29,8 +40,6 @@ const handler = async (event, context, callback) => {
     if (!queryText || !paramsUser) {
       throw new MissingParamsError();
     }
-
-    const sessionId = uuid.v4();
   
     const sessionClient = new dialogflow.SessionsClient();
     const sessionPath = sessionClient.sessionPath(process.env.DIALOGFLOW_PROJECT_ID, sessionId);
@@ -47,17 +56,36 @@ const handler = async (event, context, callback) => {
   
     const responses = await sessionClient.detectIntent(request);
     const result = responses[0].queryResult;
-  
-    if (result.intent) {
-      const newMessages = await chatbotHandlers[result.intent.displayName](result, paramsUser);
-      dialogflowResult = newMessages;
-    } else {
-      dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
-    }
+
+      if (result.intent) {
+        if(result.fulfillmentText) {
+          if(!session) {
+
+            const newSession = {
+              accessToken: event.headers.accesstoken,
+              sessionId
+            };
+
+            await DynamoHelper.setUserSession(newSession);
+          }
+
+          dialogflowResult.push({text: result.fulfillmentText});
+        } else {
+          if(session) await DynamoHelper.deleteUserSession(event.headers.accesstoken);
+
+          const newMessages = await chatbotHandlers[result.intent.displayName](result, paramsUser);
+          dialogflowResult = newMessages;
+        }
+
+      } else {
+        dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
+      }
+    
 
     dialogflowResult = dialogflowResult.map(m => ({
       ...m,
       _id: uuid.v4(),
+      sessionId,
       createdAt: new Date(),
       user: {
         _id: 2,

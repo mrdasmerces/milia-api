@@ -29,7 +29,13 @@ const handler = async (event, context, callback) => {
         
         // Responds with the challenge token from the request
         console.log('WEBHOOK_VERIFIED');
-        return callback(null, success({ challenge }));
+
+        const response = {
+          'body': parseInt(challenge),
+          'statusCode': 200
+        };
+
+        return callback(null, response);
       }
 
       return callback(null, permissionDenied(challenge));

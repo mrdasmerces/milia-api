@@ -16,4 +16,14 @@ ask-milia:
     - http:
         path: /ask-milia
         method: post
-        cors: true        
+        cors: true
+
+webhook:
+  functionName: ${self:service}-${self:provider.stage}-ask-milia
+  handler: src/handlers/webhook.handler
+  warmup: true
+  events:
+    - http:
+        path: /ask-milia
+        method: get
+        cors: true  

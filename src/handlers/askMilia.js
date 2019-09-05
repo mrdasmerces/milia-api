@@ -11,7 +11,7 @@ const { ErrorHandler }  = require('../utils/error-handling')
 const { success }       = require('../utils/response')
 const DynamoHelper      = require('../helpers/dynamodb')
 
-const chatbotHandlers = require('./chatbot');
+const intentHandlers = require('./intents');
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -23,6 +23,7 @@ const handler = async (event, context, callback) => {
   }
 
   try {
+    console.log(event);
     let sessionId = '';
 
     const session = await DynamoHelper.getUserSession(event.headers.accesstoken);
@@ -73,7 +74,7 @@ const handler = async (event, context, callback) => {
         } else {
           if(session) await DynamoHelper.deleteUserSession(event.headers.accesstoken);
 
-          const newMessages = await chatbotHandlers[result.intent.displayName](result, paramsUser);
+          const newMessages = await intentHandlers[result.intent.displayName](result, paramsUser);
           dialogflowResult = newMessages;
         }
 

@@ -12,6 +12,7 @@ const { success }       = require('../utils/response')
 const DynamoHelper      = require('../helpers/dynamodb')
 
 const intentHandlers = require('./intents');
+const channels = require('./channels');
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -23,11 +24,16 @@ const handler = async (event, context, callback) => {
   }
 
   try {
-    console.log(event);
+    const originChannel = event.queryStringParameters.originChannel;
+
+    const requestBody = JSON.parse(event.body);
+    const { queryText, paramsUser } = await channels[originChannel].getParametersRequest(requestBody);
+    await channels[originChannel].sendTyping(paramsUser);
+
+    const userId = await channels[originChannel].getUserId(requestBody, event.headers);
+    const session = await DynamoHelper.getUserSession(userId);
+
     let sessionId = '';
-
-    const session = await DynamoHelper.getUserSession(event.headers.accesstoken);
-
     if(session) {
       sessionId = session.sessionId;
     } else {
@@ -35,8 +41,6 @@ const handler = async (event, context, callback) => {
     }
 
     let dialogflowResult = [];
-
-    const { queryText, paramsUser } = JSON.parse(event.body);
 
     if (!queryText || !paramsUser) {
       throw new MissingParamsError();
@@ -63,7 +67,7 @@ const handler = async (event, context, callback) => {
           if(!session) {
 
             const newSession = {
-              accessToken: event.headers.accesstoken,
+              accessToken: userId,
               sessionId
             };
 
@@ -72,7 +76,7 @@ const handler = async (event, context, callback) => {
 
           dialogflowResult.push({text: result.fulfillmentText});
         } else {
-          if(session) await DynamoHelper.deleteUserSession(event.headers.accesstoken);
+          if(session) await DynamoHelper.deleteUserSession(userId);
 
           const newMessages = await intentHandlers[result.intent.displayName](result, paramsUser);
           dialogflowResult = newMessages;
@@ -94,6 +98,8 @@ const handler = async (event, context, callback) => {
         avatar: 'https://placeimg.com/140/140/any',
       },
     }));
+
+    await channels[originChannel].endMessageRequest(dialogflowResult, paramsUser);
 
     return callback(null, success({ dialogflowResult }));
 

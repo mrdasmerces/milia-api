@@ -70,7 +70,27 @@ const COUNTRY = {
   VNM: 'Vietnamese'
 }
 
+const BUTTOM_DOWNLOAD_TEMPLATE = {
+  payload: {
+    template_type: "button",
+    text:" Eu posso te ajudar com isso, mas somente através do meu aplicativo. Dê uma olhada na loja e faça o download :)",
+    buttons: [
+      {
+        type: "web_url",
+        url: "https://www.messenger.com",
+        title: "Download IOS"
+      },
+      {
+        type: "web_url",
+        url: "https://www.messenger.com",
+        title: "Download Android"
+      },
+    ]
+  }
+};
+
 module.exports = {
   LANGUAGES,
   COUNTRY,
+  BUTTOM_DOWNLOAD_TEMPLATE,
 };

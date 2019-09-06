@@ -1,10 +1,19 @@
 'use strict';
+const { BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
 
-const AttractionsIntent = async (result, paramsUser) => {
+const AttractionsIntent = async (result, paramsUser, originChannel) => {
 
   const dialogflowResult = [];
 
   try {
+    if(!paramsUser.lastPosition && originChannel != 'App') {
+      dialogflowResult.push({
+        template: BUTTOM_DOWNLOAD_TEMPLATE,
+      });
+
+      return dialogflowResult;
+    }
+
     dialogflowResult.push({text: 'AttractionsIntent'});
   } catch(e) {
     console.log(e);

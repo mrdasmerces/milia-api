@@ -41,7 +41,6 @@ const endMessageRequest = async (dialogflowResult, paramsUser) => {
   }];
 
   for(const message of dialogflowResult) {
-
     if(message.image) {
       messagesData.push({
         recipient: {
@@ -63,13 +62,22 @@ const endMessageRequest = async (dialogflowResult, paramsUser) => {
       recipient: {
         id: paramsUser.recipientId.toString(),
       },
-      message: {
-        text: message.text,
-      },
+      message: {},
     };
-    
+
+    if(message.text) {
+      newMessage.message.text = message.text
+    }
+
+    if(message.template) {
+      newMessage.message.attachment = {
+        type: 'template',
+        ...message.template,
+      }
+    }
+
     messagesData.push(newMessage);
-  }
+  };
 
   const promiseSerial = messagesData.map(item =>
     axios.post('https://graph.facebook.com/v4.0/me/messages?access_token=EAAFnwyY8o3wBACdFWLKDCCWTTGLQC4qVkehgO0QzPiVBXJbihcRJ1TZC71gwptrnh1ew8fA3Bcobuzpywf7z15JggWufExR7vT9mSmmx0JHiluX1AUByAZBLDZAYkK7n6LdtNZCZBc6LfyWiazqGiXnjLzf7GuIsFaIaevCj2ZCgZDZD', JSON.stringify(item), {

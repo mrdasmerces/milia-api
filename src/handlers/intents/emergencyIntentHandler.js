@@ -2,12 +2,21 @@
 
 const addressService = require('../../services/address');
 const emergencyService = require('../../services/emergency');
+const { BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
 
-const EmergencyIntent = async (result, paramsUser) => {
+const EmergencyIntent = async (result, paramsUser, originChannel) => {
 
   const dialogflowResult = [];
 
   try {
+
+    if(!paramsUser.lastPosition && originChannel != 'App') {
+      dialogflowResult.push({
+        template: BUTTOM_DOWNLOAD_TEMPLATE,
+      });
+
+      return dialogflowResult;
+    }
 
     const lastUserLocation = JSON.parse(paramsUser.lastPosition);
     const address = await addressService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude);

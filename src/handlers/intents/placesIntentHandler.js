@@ -1,12 +1,21 @@
 'use strict';
 
 const placesService = require('../../services/places');
+const { BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
 
-const PlacesIntent = async (result, paramsUser) => {
+const PlacesIntent = async (result, paramsUser, originChannel) => {
 
   const dialogflowResult = [];
 
   try {
+    if(!paramsUser.lastPosition && originChannel != 'App') {
+      dialogflowResult.push({
+        template: BUTTOM_DOWNLOAD_TEMPLATE,
+      });
+
+      return dialogflowResult;
+    }
+
     const type = result.parameters.fields['PLACES'].stringValue;
     const keyword = result.parameters.fields['FOOD_TYPE'] ? result.parameters.fields['FOOD_TYPE'].stringValue : '';
     const radius = result.parameters.fields['DISTANCE'].stringValue;

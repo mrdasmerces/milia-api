@@ -78,7 +78,7 @@ const handler = async (event, context, callback) => {
         } else {
           if(session) await DynamoHelper.deleteUserSession(userId);
 
-          const newMessages = await intentHandlers[result.intent.displayName](result, paramsUser);
+          const newMessages = await intentHandlers[result.intent.displayName](result, paramsUser, originChannel);
           dialogflowResult = newMessages;
         }
 

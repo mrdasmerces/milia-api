@@ -3,13 +3,21 @@
 const addressService = require('../../services/address');
 const foodService = require('../../services/food');
 const translateService = require('../../services/translate');
-const { COUNTRY } = require('../../models/enum');
+const { COUNTRY, BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
 
-const FoodIntent = async (result, paramsUser) => {
+const FoodIntent = async (result, paramsUser, originChannel) => {
 
   const dialogflowResult = [];
 
   try {
+    if(!paramsUser.lastPosition && originChannel != 'App') {
+      dialogflowResult.push({
+        template: BUTTOM_DOWNLOAD_TEMPLATE,
+      });
+
+      return dialogflowResult;
+    }
+
     const lastUserLocation = JSON.parse(paramsUser.lastPosition);
     const address = await addressService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude);
 

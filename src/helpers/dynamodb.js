@@ -13,13 +13,40 @@ class AwsHelper {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;
     const idKey = 'email';
     return AwsHelper.findById(idKey, idValue, table);
-  }
+  };
 
   static async getUserSession(idValue) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
     const idKey = 'accessToken';
     return AwsHelper.findById(idKey, idValue, table);
   };
+
+  static async getUserTrips(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-trips`;
+    const idKey = 'email';
+    return AwsHelper.findById(idKey, idValue, table);
+  };
+
+  static async getUserMessages(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-chat-messages`;
+    const idKey = 'email';
+    return AwsHelper.findById(idKey, idValue, table);
+  };
+
+  static async setNewUserMessage(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-chat-messages`;
+    return AwsHelper.save(table, obj);
+  };    
+  
+  static async setUserSession(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
+    return AwsHelper.save(table, obj);
+  };
+  
+  static async saveNewTrip(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-trips`;
+    return AwsHelper.save(table, obj);
+  };   
 
   static async deleteUserSession(accessToken) {
 
@@ -36,12 +63,7 @@ class AwsHelper {
     } catch (error) {
       throw new DbConnectionError(error.message);
     }
-  }
-
-  static async setUserSession(obj) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
-    return AwsHelper.save(table, obj);
-  };  
+  } 
 
   static async updateUserAccessToken(email, accessToken) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;

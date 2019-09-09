@@ -62,29 +62,29 @@ const handler = async (event, context, callback) => {
     const responses = await sessionClient.detectIntent(request);
     const result = responses[0].queryResult;
 
-      if (result.intent) {
-        if(result.fulfillmentText) {
-          if(!session) {
+    if (result.intent) {
+      if(result.fulfillmentText) {
+        if(!session) {
 
-            const newSession = {
-              accessToken: userId,
-              sessionId
-            };
+          const newSession = {
+            accessToken: userId,
+            sessionId
+          };
 
-            await DynamoHelper.setUserSession(newSession);
-          }
-
-          dialogflowResult.push({text: result.fulfillmentText});
-        } else {
-          if(session) await DynamoHelper.deleteUserSession(userId);
-
-          const newMessages = await intentHandlers[result.intent.displayName](result, paramsUser, originChannel);
-          dialogflowResult = newMessages;
+          await DynamoHelper.setUserSession(newSession);
         }
 
+        dialogflowResult.push({text: result.fulfillmentText});
       } else {
-        dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
+        if(session) await DynamoHelper.deleteUserSession(userId);
+
+        const newMessages = await intentHandlers[result.intent.displayName](result, paramsUser, originChannel);
+        dialogflowResult = newMessages;
       }
+
+    } else {
+      dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
+    }
     
 
     dialogflowResult = dialogflowResult.map(m => ({

@@ -19,11 +19,21 @@ ask-milia:
         cors: true
 
 webhook:
-  functionName: ${self:service}-${self:provider.stage}-ask-milia
+  functionName: ${self:service}-${self:provider.stage}-webhook
   handler: src/handlers/webhook.handler
   warmup: true
   events:
     - http:
         path: /ask-milia
         method: get
-        cors: true  
+        cors: true
+
+dashboard:
+  functionName: ${self:service}-${self:provider.stage}-dashboard
+  handler: src/handlers/dashboard.handler
+  warmup: true
+  events:
+    - http:
+        path: /me
+        method: get
+        cors: true

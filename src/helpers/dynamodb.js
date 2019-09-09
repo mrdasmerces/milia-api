@@ -33,6 +33,12 @@ class AwsHelper {
     return AwsHelper.findById(idKey, idValue, table);
   };
 
+  static async getUserTimeline(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`;
+    const idKey = 'email';
+    return AwsHelper.findById(idKey, idValue, table);
+  };  
+
   static async setNewUserMessage(obj) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-chat-messages`;
     return AwsHelper.save(table, obj);
@@ -45,6 +51,11 @@ class AwsHelper {
   
   static async saveNewTrip(obj) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-trips`;
+    return AwsHelper.save(table, obj);
+  };
+  
+  static async setNewUserPost(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`;
     return AwsHelper.save(table, obj);
   };   
 
@@ -63,7 +74,24 @@ class AwsHelper {
     } catch (error) {
       throw new DbConnectionError(error.message);
     }
-  } 
+  }
+  
+  static async deleteUserPost(email) {
+
+    AwsHelper.dynamodb = AwsHelper.getDynamo();
+    const params = {
+      Key: {
+        email,
+      },
+      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`,
+    };
+
+    try {
+      await AwsHelper.dynamodb.delete(params).promise();
+    } catch (error) {
+      throw new DbConnectionError(error.message);
+    }
+  }  
 
   static async updateUserAccessToken(email, accessToken) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;

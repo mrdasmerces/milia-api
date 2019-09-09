@@ -85,7 +85,6 @@ const handler = async (event, context, callback) => {
     } else {
       dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
     }
-    
 
     dialogflowResult = dialogflowResult.map(m => ({
       ...m,
@@ -97,7 +96,27 @@ const handler = async (event, context, callback) => {
         name: 'Milia',
         avatar: 'https://placeimg.com/140/140/any',
       },
+      email: paramsUser.email,
     }));
+
+    if(paramsUser.email) {
+      const messagesPromises = [DynamoHelper.setNewUserMessage({
+        _id: uuid.v4(),
+        sessionId,
+        createdAt: new Date(),
+        user: {
+          _id: 1
+        },
+        text: queryText,
+        email: paramsUser.email,
+      })];
+
+      for(const newMessageMilia of dialogflowResult) {
+        messagesPromises.push(DynamoHelper.setNewUserMessage(newMessageMilia));
+      }
+
+      await Promise.all(messagesPromises);
+    }
 
     await channels[originChannel].endMessageRequest(dialogflowResult, paramsUser);
 

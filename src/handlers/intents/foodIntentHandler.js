@@ -50,7 +50,7 @@ const FoodIntent = async (result, paramsUser, originChannel) => {
       text: `Que tal achar agora algum restaurante pra comer alguma dessas delícias?`,
       quickReplies: {
         type: 'radio',
-        keepIt: true,
+        keepIt: false,
         values: [
           {
             title: 'Nhamm! Sim!',

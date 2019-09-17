@@ -40,7 +40,7 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
         image: 'https://placeimg.com/274/274/arch',
         quickReplies: {
           type: 'radio',
-          keepIt: true,
+          keepIt: false,
           values: [
             {
               title: 'Ir agora',

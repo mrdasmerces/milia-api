@@ -37,3 +37,13 @@ dashboard:
         path: /me
         method: get
         cors: true
+
+milia-signup:
+  functionName: ${self:service}-${self:provider.stage}-milia-signup 
+  handler: src/handlers/miliaSignup.handler
+  warmup: true
+  events:
+    - http:
+        path: /milia-signup 
+        method: post
+        cors: true        

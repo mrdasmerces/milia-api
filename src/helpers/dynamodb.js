@@ -37,6 +37,11 @@ class AwsHelper {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`;
     const idKey = 'email';
     return AwsHelper.findById(idKey, idValue, table);
+  };
+  
+  static async setNewUser(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;
+    return AwsHelper.save(table, obj);
   };  
 
   static async setNewUserMessage(obj) {
@@ -105,6 +110,25 @@ class AwsHelper {
       UpdateExpression: "set accessToken = :accessToken",
       ExpressionAttributeValues:{
         ":accessToken": accessToken,
+      },
+      ReturnValues: "UPDATED_NEW"
+    };
+
+    return await AwsHelper.update(params);
+  }
+  
+  static async updateSession(sessionId, dynamoContext) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
+    const idKey = 'accessToken';
+
+    const params = {
+      TableName: table,
+      Key: {
+        [idKey]: sessionId,
+      },
+      UpdateExpression: "set dynamoContext = :dynamoContext",
+      ExpressionAttributeValues:{
+        ":dynamoContext": dynamoContext,
       },
       ReturnValues: "UPDATED_NEW"
     };

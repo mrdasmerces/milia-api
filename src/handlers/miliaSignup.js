@@ -12,7 +12,6 @@ const { success }       = require('../utils/response')
 const DynamoHelper      = require('../helpers/dynamodb')
 
 const intentHandlers = require('./intents');
-const channels = require('./channels');
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -24,27 +23,23 @@ const handler = async (event, context, callback) => {
   }
 
   try {
-    const originChannel = event.queryStringParameters.originChannel;
-
     const requestBody = JSON.parse(event.body);
-    const { queryText, paramsUser } = await channels[originChannel].getParametersRequest(requestBody);
-    await channels[originChannel].sendTyping(paramsUser);
+    const { queryText, idSessionSignup } = requestBody;
 
-    const userId = await channels[originChannel].getUserId(requestBody, event.headers);
-    const session = await DynamoHelper.getUserSession(userId);
+    if (!queryText || !idSessionSignup) {
+      throw new MissingParamsError();
+    }
+
+    const session = await DynamoHelper.getUserSession(idSessionSignup);
 
     let sessionId = '';
     if(session) {
       sessionId = session.sessionId;
     } else {
-      sessionId = uuid.v4();
+      sessionId = idSessionSignup;
     }
 
     let dialogflowResult = [];
-
-    if (!queryText || !paramsUser) {
-      throw new MissingParamsError();
-    }
   
     const sessionClient = new dialogflow.SessionsClient();
     const sessionPath = sessionClient.sessionPath(process.env.DIALOGFLOW_PROJECT_ID, sessionId);
@@ -79,14 +74,12 @@ const handler = async (event, context, callback) => {
 
         dialogflowResult.push({text: result.fulfillmentText});
       } else {
-        if(session) await DynamoHelper.deleteUserSession(userId);
-
-        const newMessages = await intentHandlers[result.intent.displayName](result, paramsUser, originChannel);
+        const newMessages = await intentHandlers[result.intent.displayName](result, sessionId);
         dialogflowResult = newMessages;
       }
 
     } else {
-      dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
+      dialogflowResult.push({text: 'Desculpe, não posso te ajudar com isso agora :( Vamos fazer seu cadastro antes. Pode repetir por favor?'});
     }
 
     dialogflowResult = dialogflowResult.map(m => ({
@@ -99,29 +92,7 @@ const handler = async (event, context, callback) => {
         name: 'Milia',
         avatar: 'https://placeimg.com/140/140/any',
       },
-      email: paramsUser.email,
     }));
-
-    if(paramsUser.email) {
-      const messagesPromises = [DynamoHelper.setNewUserMessage({
-        _id: uuid.v4(),
-        sessionId,
-        createdAt: new Date(),
-        user: {
-          _id: 1
-        },
-        text: queryText,
-        email: paramsUser.email,
-      })];
-
-      for(const newMessageMilia of dialogflowResult) {
-        messagesPromises.push(DynamoHelper.setNewUserMessage(newMessageMilia));
-      }
-
-      await Promise.all(messagesPromises);
-    }
-
-    await channels[originChannel].endMessageRequest(dialogflowResult, paramsUser);
 
     return callback(null, success({ dialogflowResult }));
 

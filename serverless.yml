@@ -16,8 +16,8 @@ custom:
 provider:
   name: aws
   runtime: nodejs10.x
-  profile: ${self:provider.stage}
   stage: ${opt:stage, 'dev'}
+  profile: ${self:provider.stage}
   region: us-east-1
   memorySize: 256
   timeout: 10

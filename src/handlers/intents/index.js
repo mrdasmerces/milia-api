@@ -7,6 +7,9 @@ const FoodIntent = require('./foodIntentHandler');
 const LanguageIntent = require('./languageIntentHandler');
 const PlacesIntent = require('./placesIntentHandler');
 const FallbackIntent = require('./fallbackIntentHandler');
+const ForgotPasswordIntent = require('./forgotPasswordIntentHandler');
+const SignupIntent = require('./signupIntentHandler');
+const SuccessSignupIntent = require('./successSignupIntentHandler');
 
 module.exports = {
   AttractionsIntent,
@@ -16,4 +19,7 @@ module.exports = {
   LanguageIntent,
   PlacesIntent,
   FallbackIntent,
+  ForgotPasswordIntent,
+  SignupIntent,
+  SuccessSignupIntent,
 }

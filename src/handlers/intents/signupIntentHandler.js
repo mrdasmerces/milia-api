@@ -13,7 +13,13 @@ const SignupIntent = async (result, sessionId) => {
   try {
     await DynamoHelper.updateSession(sessionId, JSON.stringify(result));
 
-    const tripDateValid = await TripHelper.validateTripDates(result.parameters.fields.trip_date.structValue.fields.startDate.stringValue, result.parameters.fields.trip_date.structValue.fields.endDate.stringValue);
+    const paramsDate = {
+      startDate: result.parameters.fields.trip_date.structValue.fields.startDate.stringValue,
+      endDate: result.parameters.fields.trip_date.structValue.fields.endDate.stringValue,
+      email: result.parameters.fields.trip_date.email.stringValue,
+    };
+
+    const tripDateValid = await TripHelper.validateTripDates(paramsDate.startDate, paramsDate.endDate, email);
 
     if(!tripDateValid) {
       dialogflowResult.push({
@@ -63,6 +69,7 @@ const SignupIntent = async (result, sessionId) => {
       return dialogflowResult;
     }
 
+    //colocar tempos verbais correto de acordo com as datas da viagem
     const textConfirmation = `${result.parameters.fields.name.stringValue}, só confirmando: Você vai viajar pra ${result.parameters.fields.country.stringValue} no dia ${moment(result.parameters.fields.trip_date.structValue.fields.startDate.stringValue).format('LL')} com volta prevista em ${moment(result.parameters.fields.trip_date.structValue.fields.endDate.stringValue).format('LL')} e vai começar sua viagem em ${result.parameters.fields.city.stringValue}. Tá tudo certinho?`;
 
     dialogflowResult.push({

@@ -38,7 +38,7 @@ const SuccessSignupIntent = async (result, sessionId) => {
     dialogflowResult.push({text: 'Pronto! :) Preparei coisas bem legais pra você. Só um minutinho...'});
   } catch(e) {
     console.log(e);
-    dialogflowResult.push({text: 'Desculpe, não consegui te ajudar agora :( Pode repetir por favor?'});
+    dialogflowResult.push({text: 'Ops, tive um probleminha para salvar sua viagem. Por favor, tente novamente mais tarde.'});
   }
   
   return dialogflowResult;

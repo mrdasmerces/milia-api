@@ -112,6 +112,7 @@ const handler = async (event, context, callback) => {
         },
         text: queryText,
         email: paramsUser.email,
+        intent: result.intent ? result.intent.displayName : ''
       })];
 
       for(const newMessageMilia of dialogflowResult) {

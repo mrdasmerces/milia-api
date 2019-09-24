@@ -2,6 +2,7 @@
 
 const dialogflow = require('dialogflow');
 const uuid = require('uuid');
+const moment = require('moment');
 
 const {
   MissingParamsError, 
@@ -37,7 +38,7 @@ const handler = async (event, context, callback) => {
     if(session) {
       sessionId = session.sessionId;
     } else {
-      sessionId = uuid.v4();
+      sessionId = userId;
     }
 
     let dialogflowResult = [];
@@ -97,8 +98,9 @@ const handler = async (event, context, callback) => {
       user: {
         _id: 2,
         name: 'Milia',
-        avatar: 'https://placeimg.com/140/140/any',
+        avatar: 'https://images-milia.s3.amazonaws.com/Webp.net-resizeimage.jpg',
       },
+      intent: result.intent ? result.intent.displayName : 'WelcomeIntent',
       email: paramsUser.email,
     }));
 
@@ -112,7 +114,7 @@ const handler = async (event, context, callback) => {
         },
         text: queryText,
         email: paramsUser.email,
-        intent: result.intent ? result.intent.displayName : ''
+        intent: result.intent ? result.intent.displayName : 'WelcomeIntent'
       })];
 
       for(const newMessageMilia of dialogflowResult) {

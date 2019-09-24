@@ -15,7 +15,7 @@ Resources:
   sessions:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:service}-${self:provider.stage}-session
+      TableName: ${self:service}-${self:provider.stage}-user-session
       AttributeDefinitions:
         - AttributeName: accessToken
           AttributeType: S               
@@ -28,20 +28,32 @@ Resources:
   chatMessages:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:service}-${self:provider.stage}-chat-messages
+      TableName: ${self:service}-${self:provider.stage}-user-messages
       AttributeDefinitions:
+        - AttributeName: _id
+          AttributeType: S
         - AttributeName: email
-          AttributeType: S               
+          AttributeType: S                                    
       KeySchema:
-        - AttributeName: email
+        - AttributeName: _id
           KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: emailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1                        
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
   trips:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:service}-${self:provider.stage}-user-trips
+      TableName: ${self:service}-${self:provider.stage}-user-actual-trip
       AttributeDefinitions:
         - AttributeName: email
           AttributeType: S               
@@ -54,7 +66,7 @@ Resources:
   itinerary:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:service}-${self:provider.stage}-itinerary
+      TableName: ${self:service}-${self:provider.stage}-trip-itinerary
       AttributeDefinitions:
         - AttributeName: tripId
           AttributeType: S               

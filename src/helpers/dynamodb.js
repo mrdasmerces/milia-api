@@ -16,27 +16,39 @@ class AwsHelper {
   };
 
   static async getUserSession(idValue) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`;
     const idKey = 'accessToken';
     return AwsHelper.findById(idKey, idValue, table);
   };
 
-  static async getUserTrips(idValue) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-trips`;
+  static async getUserActualTrip(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-actual-trip`;
     const idKey = 'email';
     return AwsHelper.findById(idKey, idValue, table);
   };
 
   static async getTripItinerary(idValue) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-itinerary`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-trip-itinerary`;
     const idKey = 'tripId';
     return AwsHelper.findById(idKey, idValue, table);
   };  
 
   static async getUserMessages(idValue) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-chat-messages`;
-    const idKey = 'email';
-    return AwsHelper.findById(idKey, idValue, table);
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-messages`;
+
+    const params = {
+      TableName : table,
+      IndexName : "emailIndex",
+      KeyConditionExpression: "#email = :v_email",
+      ExpressionAttributeNames:{
+          "#email": "email"
+      },
+      ExpressionAttributeValues: {
+          ":v_email": idValue
+      }
+    };
+
+    return AwsHelper.query(params);
   };
 
   static async getUserTimeline(idValue) {
@@ -51,17 +63,17 @@ class AwsHelper {
   };  
 
   static async setNewUserMessage(obj) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-chat-messages`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-messages`;
     return AwsHelper.save(table, obj);
   };    
   
   static async setUserSession(obj) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`;
     return AwsHelper.save(table, obj);
   };
   
   static async saveNewTrip(obj) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-trips`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-actual-trip`;
     return AwsHelper.save(table, obj);
   };
   
@@ -71,7 +83,7 @@ class AwsHelper {
   };
   
   static async setNewItinerary(obj) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-itinerary`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-trip-itinerary`;
     return AwsHelper.save(table, obj);
   };   
 
@@ -82,7 +94,7 @@ class AwsHelper {
       Key: {
         accessToken,
       },
-      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`,
+      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`,
     };
 
     try {
@@ -129,7 +141,7 @@ class AwsHelper {
   }
   
   static async updateSession(sessionId, dynamoContext) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-session`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`;
     const idKey = 'accessToken';
 
     const params = {
@@ -148,7 +160,7 @@ class AwsHelper {
   }
   
   static async updateItinerary(tripId, itinerary) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-itinerary`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-trip-itinerary`;
     const idKey = 'tripId';
 
     const params = {
@@ -220,6 +232,26 @@ class AwsHelper {
     }
 
   }
+
+  static async query(params) {
+
+    AwsHelper.dynamodb = AwsHelper.getDynamo();
+
+    let item = {};
+
+    try {
+      item = await AwsHelper.dynamodb.query(params).promise();
+    } catch (error) {
+      throw new DbConnectionError(error.message);
+    }
+
+    if (item == null || item.Items == null) {
+      return null;
+    } else {
+      return item.Items;
+    }
+
+  }  
 
   static getDynamo() {
 

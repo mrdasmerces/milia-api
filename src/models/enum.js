@@ -89,8 +89,24 @@ const BUTTOM_DOWNLOAD_TEMPLATE = {
   }
 };
 
+const FRIENDLY_MESSAGES_INTENT = {
+  WelcomeIntent: 'Que tal saber mais sobre a Milia?',
+  SignupIntent: 'Que tal saber mais sobre a Milia?',
+  SuccessSignupIntent: 'Que tal saber mais sobre a Milia?',
+  ForgotPassword: 'Que tal saber mais sobre a Milia?',
+  FallbackIntent: 'Que tal saber mais sobre a Milia?',
+  HelpIntent: 'Pergunte o que mais a Milia pode fazer :)',
+  LanguageIntent: 'A Milia é poliglota, traduz tudo pra você!',
+  EmergencyIntent: 'A Milia está aqui pra te salvar!',
+  AttractionsIntent: 'Procure pontos turísticos com a Milia!',
+  ExchangeIntent: 'Pergunte agora cotações de suas moedas :)',
+  PlacesIntent: 'A Milia encontra o lugar que você quiser :)',
+  FoodIntent: 'A Milia acha as melhores comidas pra você :)',
+}
+
 module.exports = {
   LANGUAGES,
   COUNTRY,
   BUTTOM_DOWNLOAD_TEMPLATE,
+  FRIENDLY_MESSAGES_INTENT,
 };

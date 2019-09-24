@@ -28,15 +28,45 @@ webhook:
         method: get
         cors: true
 
-dashboard:
-  functionName: ${self:service}-${self:provider.stage}-dashboard
-  handler: src/handlers/dashboard.handler
+resume:
+  functionName: ${self:service}-${self:provider.stage}-resume
+  handler: src/handlers/getResume.handler
   warmup: true
   events:
     - http:
         path: /me
         method: get
         cors: true
+
+messages:
+  functionName: ${self:service}-${self:provider.stage}-messages
+  handler: src/handlers/getMessages.handler
+  warmup: true
+  events:
+    - http:
+        path: /messages
+        method: get
+        cors: true
+        
+getItinerary:
+  functionName: ${self:service}-${self:provider.stage}-get-itinerary
+  handler: src/handlers/getItinerary.handler
+  warmup: true
+  events:
+    - http:
+        path: /itinerary
+        method: get
+        cors: true
+        
+buildItinerary:
+  functionName: ${self:service}-${self:provider.stage}-build-itinerary
+  handler: src/handlers/buildItinerary.handler
+  warmup: true
+  events:
+    - http:
+        path: /itinerary
+        method: post
+        cors: true         
 
 milia-signup:
   functionName: ${self:service}-${self:provider.stage}-milia-signup 
@@ -46,14 +76,4 @@ milia-signup:
     - http:
         path: /milia-signup 
         method: post
-        cors: true
-        
-build-trip:
-  functionName: ${self:service}-${self:provider.stage}-build-trip
-  handler: src/handlers/buildTrip.handler
-  warmup: true
-  events:
-    - http:
-        path: /build-trip
-        method: post
-        cors: true        
+        cors: true    

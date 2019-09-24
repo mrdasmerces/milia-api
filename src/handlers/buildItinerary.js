@@ -2,7 +2,7 @@
 
 const { ErrorHandler }  = require('../utils/error-handling')
 const { success }       = require('../utils/response')
-const DynamoHelper      = require('../helpers/dynamodb')
+const TripHelper      = require('../helpers/triphelper')
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -14,17 +14,10 @@ const handler = async (event, context, callback) => {
   }
 
   try {
-    const email = event.queryStringParameters.email;
+    const requestBody = JSON.parse(event.body);
+    const { attractionsPerDay, tripId, city, tripDays, hotelLocation } = requestBody;
 
-    const trips = await DynamoHelper.getUserTrips(email);
-    const messages = await DynamoHelper.getUserMessages(email);
-    const timeline = await DynamoHelper.getUserTimeline(email);
-
-    const ret = {
-      trips: trips ? trips : [],
-      messages: messages ? messages : [],
-      timeline: timeline ? timeline : [],
-    }
+    const ret = await TripHelper.buildItinerary(attractionsPerDay, tripDays, tripId, city, hotelLocation);
 
     return callback(null, success(ret));
 

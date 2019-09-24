@@ -16,10 +16,10 @@ const SignupIntent = async (result, sessionId) => {
     const paramsDate = {
       startDate: result.parameters.fields.trip_date.structValue.fields.startDate.stringValue,
       endDate: result.parameters.fields.trip_date.structValue.fields.endDate.stringValue,
-      email: result.parameters.fields.trip_date.email.stringValue,
+      email: result.parameters.fields.email.stringValue,
     };
 
-    const tripDateValid = await TripHelper.validateTripDates(paramsDate.startDate, paramsDate.endDate, email);
+    const tripDateValid = await TripHelper.validateTripDates(paramsDate.startDate, paramsDate.endDate, paramsDate.email);
 
     if(!tripDateValid) {
       dialogflowResult.push({
@@ -41,7 +41,7 @@ const SignupIntent = async (result, sessionId) => {
        return dialogflowResult;      
     }
 
-    const user = await DynamoHelper.getUser(result.parameters.fields.email.stringValue);
+    const user = await DynamoHelper.getUser(result.parameters.fields.email.stringValue.toLowerCase());
 
     if(user) {
       dialogflowResult.push({
@@ -85,7 +85,7 @@ const SignupIntent = async (result, sessionId) => {
             newMessage: 'Tudo certo, estou pronto!',
           },
           {
-            title: 'Não, você não entendeu direito >:(',
+            title: 'Não, vou arrumar!',
             value: '#signup',
             function: 'newSignup',
             newMessage: 'Vamos recomeçar.',
@@ -95,8 +95,22 @@ const SignupIntent = async (result, sessionId) => {
     });
   } catch(e) {
     console.log(e);
-    dialogflowResult.push({text: 'Desculpe, não consegui te ajudar agora :( Pode repetir por favor?'});
-  }
+    dialogflowResult.push({
+      text: 'Ops, me confundi na hora de cadastrar você comigo. Podemos recomeçar, por favor?',
+      quickReplies: {
+        type: 'radio',
+        keepIt: false,
+        values: [
+          {
+            title: 'Continuar cadastro',
+            value: '#signup',
+            function: 'newSignup',
+            newMessage: 'Ok, sem problemas, vamos de novo!',
+          },
+        ],
+      },        
+     });
+    }
   
   return dialogflowResult;
 

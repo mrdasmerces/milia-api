@@ -27,6 +27,12 @@ class AwsHelper {
     return AwsHelper.findById(idKey, idValue, table);
   };
 
+  static async getTripItinerary(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-itinerary`;
+    const idKey = 'tripId';
+    return AwsHelper.findById(idKey, idValue, table);
+  };  
+
   static async getUserMessages(idValue) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-chat-messages`;
     const idKey = 'email';
@@ -61,6 +67,11 @@ class AwsHelper {
   
   static async setNewUserPost(obj) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`;
+    return AwsHelper.save(table, obj);
+  };
+  
+  static async setNewItinerary(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-itinerary`;
     return AwsHelper.save(table, obj);
   };   
 
@@ -129,6 +140,25 @@ class AwsHelper {
       UpdateExpression: "set dynamoContext = :dynamoContext",
       ExpressionAttributeValues:{
         ":dynamoContext": dynamoContext,
+      },
+      ReturnValues: "UPDATED_NEW"
+    };
+
+    return await AwsHelper.update(params);
+  }
+  
+  static async updateItinerary(tripId, itinerary) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-itinerary`;
+    const idKey = 'tripId';
+
+    const params = {
+      TableName: table,
+      Key: {
+        [idKey]: tripId,
+      },
+      UpdateExpression: "set itinerary = :itinerary",
+      ExpressionAttributeValues:{
+        ":itinerary": itinerary,
       },
       ReturnValues: "UPDATED_NEW"
     };

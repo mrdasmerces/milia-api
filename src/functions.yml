@@ -46,4 +46,14 @@ milia-signup:
     - http:
         path: /milia-signup 
         method: post
+        cors: true
+        
+build-trip:
+  functionName: ${self:service}-${self:provider.stage}-build-trip
+  handler: src/handlers/buildTrip.handler
+  warmup: true
+  events:
+    - http:
+        path: /build-trip
+        method: post
         cors: true        

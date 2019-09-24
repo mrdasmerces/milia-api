@@ -51,6 +51,19 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+  itinerary:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:service}-${self:provider.stage}-itinerary
+      AttributeDefinitions:
+        - AttributeName: tripId
+          AttributeType: S               
+      KeySchema:
+        - AttributeName: tripId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1        
   timeline:
     Type: AWS::DynamoDB::Table
     Properties:

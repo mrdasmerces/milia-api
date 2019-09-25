@@ -1,27 +1,21 @@
 'use strict';
 
-const addressService = require('../../services/address');
+const { countryCodeService } = require('../../services/address');
 const foodService = require('../../services/food');
 const translateService = require('../../services/translate');
-const { COUNTRY, BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
+const { COUNTRY } = require('../../models/enum');
+const { removeAcento } = require('../../utils/remove-acento')
 
-const FoodIntent = async (result, paramsUser, originChannel) => {
+const FoodIntent = async (result, paramsUser) => {
 
   const dialogflowResult = [];
 
   try {
-    if(!paramsUser.lastPosition && originChannel != 'App') {
-      dialogflowResult.push({
-        template: BUTTOM_DOWNLOAD_TEMPLATE,
-      });
+    let country = result.parameters.fields['geo-country'].stringValue;
+    country = removeAcento(country);
+    const address = await countryCodeService(country);
 
-      return dialogflowResult;
-    }
-
-    const lastUserLocation = JSON.parse(paramsUser.lastPosition);
-    const address = await addressService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude);
-
-    const countryCode = address.data.results[0].formatted_address.substring(address.data.results[0].formatted_address.lastIndexOf(',')+2)
+    const countryCode = address.data.results[0].address_components[0].short_name;
     let nationality = '';
 
     if (COUNTRY[countryCode]) {
@@ -33,7 +27,7 @@ const FoodIntent = async (result, paramsUser, originChannel) => {
     const foods = await foodService(nationality);
 
     dialogflowResult.push({
-      text: `Dê uma olhadas nessas comidas de onde você está agora:`,
+      text: `Dê uma olhadas nesses pratos:`,
     });
 
     foods.data.meals.sort(() => Math.random() - 0.5);
@@ -46,27 +40,30 @@ const FoodIntent = async (result, paramsUser, originChannel) => {
       });
     };
 
-    dialogflowResult.push({
-      text: `Que tal achar agora algum restaurante pra comer alguma dessas delícias?`,
-      quickReplies: {
-        type: 'radio',
-        keepIt: false,
-        values: [
-          {
-            title: 'Nhamm! Sim!',
-            value: 'findAPlace',
-            function: 'findAPlace',
-            newMessage: 'Quero comer agora!',
-          },
-          {
-            title: 'Não, talvez depois.',
-            value: 'no',
-            function: 'findAPlace',
-            newMessage: 'Não, talvez depois.',
-          },
-        ],
-      },
-    });
+    if(paramsUser.lastPosition) {
+      dialogflowResult.push({
+        text: `Que tal achar agora algum restaurante pra comer alguma dessas delícias?`,
+        quickReplies: {
+          type: 'radio',
+          keepIt: false,
+          values: [
+            {
+              title: 'Nhamm! Sim!',
+              value: 'findAPlace',
+              function: 'findAPlace',
+              newMessage: 'Quero comer agora!',
+            },
+            {
+              title: 'Não, talvez depois.',
+              value: 'no',
+              function: 'findAPlace',
+              newMessage: 'Não, talvez depois.',
+            },
+          ],
+        },
+      });
+    }
+
 
   } catch(e) {
     console.log(e);

@@ -1,6 +1,6 @@
 'use strict';
 
-const addressService = require('../../services/address');
+const { addressService } = require('../../services/address');
 const emergencyService = require('../../services/emergency');
 const { BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
 

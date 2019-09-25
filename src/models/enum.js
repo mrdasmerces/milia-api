@@ -7,6 +7,7 @@ const LANGUAGES = {
   búlgaro: 'ar',
   bulgaro: 'ar',
   checo: 'cs',
+  croata: 'hr',
   dinamarquês: 'da',
   dinamarques: 'da',
   holandês: 'nl',
@@ -102,6 +103,8 @@ const FRIENDLY_MESSAGES_INTENT = {
   ExchangeIntent: 'Pergunte agora cotações de suas moedas :)',
   PlacesIntent: 'A Milia encontra o lugar que você quiser :)',
   FoodIntent: 'A Milia acha as melhores comidas pra você :)',
+  DocumentsIntent: 'Documentos pra viajar? A Milia te conta!',
+  WhatToDoIntent: 'Procurando o que fazer? A Milia te ajuda!',
 }
 
 module.exports = {

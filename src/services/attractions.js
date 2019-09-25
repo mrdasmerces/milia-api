@@ -11,5 +11,8 @@ module.exports = {
   },
   getDirections: (hotelLocation, placesToVisit) => {
     return axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${hotelLocation}&destination=${hotelLocation}&waypoints=optimize:true${placesToVisit}&language=pt-BR&key=${process.env.GOOGLE_MAPS_KEY}`);
-  },  
+  },
+  getAttractionByName: (placeName) => {
+    return axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${placeName}&inputtype=textquery&fields=place_id,photos,formatted_address,name,rating,opening_hours,geometry&key=${process.env.GOOGLE_MAPS_KEY}`);
+  },   
 };

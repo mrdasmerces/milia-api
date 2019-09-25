@@ -10,6 +10,8 @@ const FallbackIntent = require('./fallbackIntentHandler');
 const ForgotPasswordIntent = require('./forgotPasswordIntentHandler');
 const SignupIntent = require('./signupIntentHandler');
 const SuccessSignupIntent = require('./successSignupIntentHandler');
+const DocumentsIntent = require('./documentsIntentHandler');
+const WhatToDoIntent = require('./whatToDoIntentHandler');
 
 module.exports = {
   AttractionsIntent,
@@ -22,4 +24,6 @@ module.exports = {
   ForgotPasswordIntent,
   SignupIntent,
   SuccessSignupIntent,
+  DocumentsIntent,
+  WhatToDoIntent,
 }

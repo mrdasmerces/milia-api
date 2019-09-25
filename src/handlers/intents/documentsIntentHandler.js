@@ -18,10 +18,10 @@ const DocumentsIntent = async (result) => {
     if(COUNTRIES_NEEDS_VISA.includes(country)) {
       dialogflowResult.push({text: `Ops, você vai precisar de um visto de turista. Entre já no site do consulado do seu país de destino (${country}) e veja como tirar o visto.`});
     } else {
-      dialogflowResult.push({text: `Boa notícia! Você não precisa de nenhum visto.`});
+      dialogflowResult.push({text: `Boa notícia! Você não precisa de nenhum visto. Porém, você precisa de um seguro viagem. Faça um pra não ter dor de cabeças na imigração :)`});
     }
     
-    dialogflowResult.push({text: `Outra dica para não ter erro é não esquecer de conferir os certificados e vacinas exigidos. Isso é bem simples de fazer — basta consultar no site da ANVISA para viajantes: https://civnet.anvisa.gov.br/app/viajante`});
+    dialogflowResult.push({text: `Uma boa dica para não ter erro é não esquecer de conferir os certificados e vacinas exigidos. Isso é bem simples de fazer — basta consultar no site da ANVISA para viajantes: https://civnet.anvisa.gov.br/app/viajante`});
 
   } catch(e) {
     console.log(e);

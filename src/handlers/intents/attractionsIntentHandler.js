@@ -20,7 +20,7 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
 
     const ret = await getAttractionByName(placeName);
 
-    const placeFound = ret.data.candidates[0]
+    const placeFound = ret.data.candidates[0];
 
     dialogflowResult.push({
       text: `${placeFound.name} - ${placeFound.formatted_address}`,
@@ -34,32 +34,31 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
             value: 'goToPlace',
             function: 'goToPlace',
             place_id: `${placeFound.place_id}`,
-            marker: {
+            marker: JSON.stringify({
               identifier: placeFound.place_id,
               title: placeFound.name,
               description: placeFound.formatted_address,
               latitude: placeFound.geometry.location.lat,
               longitude: placeFound.geometry.location.lng,
-            }
+            })
           },
           {
             title: 'Adicionar ao roteiro',
             value: 'addToItinerary',
             function: 'addToItinerary',
             place_id: `${placeFound.place_id}`,
-            marker: {
+            marker: JSON.stringify({
               identifier: placeFound.place_id,
               title: placeFound.name,
               description: placeFound.formatted_address,
               latitude: placeFound.geometry.location.lat,
               longitude: placeFound.geometry.location.lng,
-            }
+            })
           },
         ],
       },
     });
 
-    dialogflowResult.push({text: 'AttractionsIntent'});
   } catch(e) {
     console.log(e);
     dialogflowResult.push({text: 'Desculpe, não consegui te ajudar agora :( Pode repetir por favor?'});

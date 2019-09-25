@@ -77,12 +77,12 @@ const BUTTOM_DOWNLOAD_TEMPLATE = {
     buttons: [
       {
         type: "web_url",
-        url: "https://www.messenger.com",
+        url: "https://www.apple.com/br/ios/app-store/",
         title: "Download IOS"
       },
       {
         type: "web_url",
-        url: "https://www.messenger.com",
+        url: "https://play.google.com/store/apps?hl=pt_BR",
         title: "Download Android"
       },
     ]

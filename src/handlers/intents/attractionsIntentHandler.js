@@ -70,6 +70,7 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
               value: 'addToItinerary',
               function: 'addToItinerary',
               place_id: `${placeFound.place_id}`,
+              itinerary: JSON.stringify(itinerary),
               marker: JSON.stringify({
                 identifier: placeFound.place_id,
                 title: placeFound.name,

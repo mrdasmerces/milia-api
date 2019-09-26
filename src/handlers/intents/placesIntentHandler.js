@@ -75,7 +75,7 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
 
   } catch(e) {
     console.log(e);
-    dialogflowResult.push({text: 'Desculpe, não encontrei nenhum lugar pra você agora :( Que tal perguntar de outra forma?'});
+    dialogflowResult.push({text: 'Desculpe, não encontrei nenhum lugar pra você agora :( Que tal procurar outro lugar?'});
   }
   
   return dialogflowResult;

@@ -29,7 +29,7 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
 
     if(!locations.data.results.length) throw new Error('Nenhum lugar aberto agora de acordo com as buscas.');
 
-    locations.data.results = locations.data.results.slice(0, 3);
+    locations.data.results = locations.data.results.slice(0, 5);
 
     dialogflowResult.push({
       text: `Perfeito! Veja os lugares mais próximos de você que estão aberto agora:`,

@@ -49,50 +49,58 @@ const endMessageRequest = async (dialogflowResult, paramsUser) => {
   const promises = [];
   for(const message of dialogflowResult) {
 
-    const payload = {
-      StatusCode: 200,
-      StatusDescription: 'OK',
-      chat_id: paramsUser.chat_id,
-      parse_mode: 'Markdown',      
+    const payload = { 
+      message: {
+        StatusCode: 200,
+        StatusDescription: 'OK',
+        chat_id: paramsUser.chat_id,
+        parse_mode: 'Markdown',      
+      },
+      type: 'Message'
     };
 
+
+    if(message.image) {
+      const payloadImage = { message: {...payload.message}};
+      payloadImage.message.photo = message.image;
+      payloadImage.type = 'Photo';
+
+      promises.push(payloadImage);
+    };
+    
     if(message.text) {
-      payload.text = message.text;
+      payload.message.text = message.text;
     }
 
     if(message.template) {
-      payload.text = message.template.payload.text;
+      payload.message.text = message.template.payload.text;
 
-      payload.reply_markup = {
+      payload.message.reply_markup = {
         inline_keyboard: [[]]
       }
 
       for(const button of message.template.payload.buttons) {
-        payload.reply_markup.inline_keyboard[0].push({
+        payload.message.reply_markup.inline_keyboard[0].push({
           text: button.title,
           url: button.url
         });
       }
 
-      payload.reply_markup = JSON.stringify(payload.reply_markup);
+      payload.message.reply_markup = JSON.stringify(payload.message.reply_markup);
     }
 
-    promises.push(post(`/bot${process.env.TELEGRAM_HASH}/sendMessage`, payload))
-
-
-    if(message.image) {
-      const payloadImage = {...payload};
-      delete payloadImage.reply_markup;
-      payloadImage.photo = message.image;
-
-      promises.push(post(`/bot${process.env.TELEGRAM_HASH}/sendPhoto`, payloadImage))
-    };
-
+    promises.push(payload);
   }
 
-  const response = Promise.all(promises);
+  const promiseSerial = promises.reduce((p, item) => p.then(() =>
+    post(`/bot${process.env.TELEGRAM_HASH}/send${item.type}`, item.message)), Promise.resolve());
 
-  return response;
+  try {
+    const result =  await promiseSerial;
+    return result;
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 module.exports = {

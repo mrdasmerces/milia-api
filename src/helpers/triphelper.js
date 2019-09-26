@@ -6,9 +6,8 @@ const uuid = require('uuid');
 
 moment.locale('pt-BR');
 
-const { getFirstPage, getNextPage, getDirections } = require('../services/attractions');
-
-
+const { getFirstPage, getNextPage } = require('../services/attractions');
+const { removeAcento } = require('../utils/remove-acento');
 
 class TripHelper {
 
@@ -22,7 +21,8 @@ class TripHelper {
   };
 
   static async buildItinerary(attractionsPerDay, tripDays, tripId, city, hotelLocation) {
-    const attractions = await getFirstPage('rome');
+    const newCity = removeAcento(city);
+    const attractions = await getFirstPage(newCity);
 
     let expectedAttractions = tripDays * attractionsPerDay;
     let availableAttractions = attractions.data.results.length;

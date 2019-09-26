@@ -79,15 +79,15 @@ const endMessageRequest = async (dialogflowResult, paramsUser) => {
     messagesData.push(newMessage);
   };
 
-  const promiseSerial = messagesData.map(item =>
+  const promiseSerial = messagesData.reduce((p, item) => p.then(() =>
     axios.post('https://graph.facebook.com/v4.0/me/messages?access_token=EAAFnwyY8o3wBACdFWLKDCCWTTGLQC4qVkehgO0QzPiVBXJbihcRJ1TZC71gwptrnh1ew8fA3Bcobuzpywf7z15JggWufExR7vT9mSmmx0JHiluX1AUByAZBLDZAYkK7n6LdtNZCZBc6LfyWiazqGiXnjLzf7GuIsFaIaevCj2ZCgZDZD', JSON.stringify(item), {
       headers: {
       'content-type': 'application/json',
     }
-  }));
+  })), Promise.resolve());
 
   try {
-    const result = await Promise.all(promiseSerial);
+    const result = await promiseSerial;
     return result;
   } catch(e) {
     console.log(e);

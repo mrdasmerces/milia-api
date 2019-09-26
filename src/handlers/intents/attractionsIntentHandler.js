@@ -1,5 +1,5 @@
 'use strict';
-const { getAttractionByName } = require('../../services/attractions');
+const { getAttractionByName, buildPhotoUrl } = require('../../services/attractions');
 
 const DynamoHelper      = require('../../helpers/dynamodb')
 const TripHelper      = require('../../helpers/triphelper')
@@ -18,7 +18,6 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
 
     const newMessageResult = {
       text: `${placeFound.name} - ${placeFound.formatted_address}`,
-      image: 'https://placeimg.com/274/274/arch',
       quickReplies: {
         type: 'radio',
         keepIt: false,
@@ -53,6 +52,10 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
         }        
       }
     };
+
+    if(placeFound.photos && placeFound.photos.length) {
+      newMessageResult.image = await buildPhotoUrl(placeFound.photos[0].photo_reference);
+    }
 
     if(paramsUser.email && originChannel === 'App') {
       const actualTrip = await DynamoHelper.getUserActualTrip(paramsUser.email);

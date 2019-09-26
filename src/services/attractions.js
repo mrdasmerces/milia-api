@@ -14,5 +14,8 @@ module.exports = {
   },
   getAttractionByName: (placeName) => {
     return axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${placeName}&inputtype=textquery&fields=place_id,photos,formatted_address,name,rating,opening_hours,geometry&language-pt-BR&key=${process.env.GOOGLE_MAPS_KEY}`);
-  },   
+  },
+  buildPhotoUrl: (photoReference) => {
+    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=700&maxheight=700&photoreference=${photoReference}&key=${process.env.GOOGLE_MAPS_KEY}`;
+  },
 };

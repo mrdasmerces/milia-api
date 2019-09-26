@@ -1,5 +1,6 @@
 'use strict';
 
+const { buildPhotoUrl } = require('../../services/attractions');
 const placesService = require('../../services/places');
 const { BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
 
@@ -22,7 +23,7 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
     const minPrice = result.parameters.fields['PRICE'].stringValue[0];
     const maxPrice = result.parameters.fields['PRICE'].stringValue[2];
 
-    const lastUserLocation = JSON.parse(paramsUser.lastPosition);
+    const lastUserLocation = paramsUser.lastPosition;
 
     const locations = await placesService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude, type, radius, minPrice, maxPrice, keyword);
 
@@ -35,9 +36,8 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
     });
 
     for(const location of locations.data.results) {
-      dialogflowResult.push({
+      const newMessageResult = {
         text: `${location.name} - ${location.vicinity}`,
-        image: 'https://placeimg.com/274/274/arch',
         quickReplies: {
           type: 'radio',
           keepIt: true,
@@ -64,7 +64,13 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
             ]
           }        
         }        
-      });
+      };
+
+      if(location.photos && location.photos.length) {
+        newMessageResult.image = await buildPhotoUrl(location.photos[0].photo_reference);
+      }
+
+      dialogflowResult.push(newMessageResult);
     }
 
   } catch(e) {

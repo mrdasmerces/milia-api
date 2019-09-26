@@ -82,6 +82,7 @@ const endMessageRequest = async (dialogflowResult, paramsUser) => {
 
     if(message.image) {
       const payloadImage = {...payload};
+      delete payloadImage.reply_markup;
       payloadImage.photo = message.image;
 
       promises.push(post(`/bot${process.env.TELEGRAM_HASH}/sendPhoto`, payloadImage))

@@ -1,20 +1,14 @@
 'use strict';
-const { BUTTOM_DOWNLOAD_TEMPLATE } = require('../../models/enum');
-
 const { getAttractionByName } = require('../../services/attractions');
+
+const DynamoHelper      = require('../../helpers/dynamodb')
+const TripHelper      = require('../../helpers/triphelper')
 
 const AttractionsIntent = async (result, paramsUser, originChannel) => {
 
   const dialogflowResult = [];
 
   try {
-    if(!paramsUser.lastPosition && originChannel != 'App') {
-      dialogflowResult.push({
-        template: BUTTOM_DOWNLOAD_TEMPLATE,
-      });
-
-      return dialogflowResult;
-    }
 
     const placeName = result.parameters.fields.any.stringValue;
 
@@ -22,7 +16,7 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
 
     const placeFound = ret.data.candidates[0];
 
-    dialogflowResult.push({
+    const newMessageResult = {
       text: `${placeFound.name} - ${placeFound.formatted_address}`,
       image: 'https://placeimg.com/274/274/arch',
       quickReplies: {
@@ -34,19 +28,7 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
             value: 'goToPlace',
             function: 'goToPlace',
             place_id: `${placeFound.place_id}`,
-            marker: JSON.stringify({
-              identifier: placeFound.place_id,
-              title: placeFound.name,
-              description: placeFound.formatted_address,
-              latitude: placeFound.geometry.location.lat,
-              longitude: placeFound.geometry.location.lng,
-            })
-          },
-          {
-            title: 'Adicionar ao roteiro',
-            value: 'addToItinerary',
-            function: 'addToItinerary',
-            place_id: `${placeFound.place_id}`,
+            mapUrl: `http://maps.google.com/?q=${placeFound.geometry.location.lat},${placeFound.geometry.location.lng}`,
             marker: JSON.stringify({
               identifier: placeFound.place_id,
               title: placeFound.name,
@@ -57,7 +39,48 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
           },
         ],
       },
-    });
+      template: {
+        payload: {
+          template_type: "button",
+          text: `${placeFound.name} - ${placeFound.formatted_address}`,
+          buttons: [
+            {
+              type: "web_url",
+              url: `http://maps.google.com/?q=${placeFound.geometry.location.lat},${placeFound.geometry.location.lng}`,
+              title: "Ir agora"
+            },
+          ]
+        }        
+      }
+    };
+
+    if(paramsUser.email && originChannel === 'App') {
+      const actualTrip = await DynamoHelper.getUserActualTrip(paramsUser.email);
+      if(actualTrip) {
+        const isaValidActualTrip = await TripHelper.isTheCurrentTrip(actualTrip.startTripDate, actualTrip.endTripDate);
+        if(isaValidActualTrip) {
+          const itinerary = await DynamoHelper.getTripItinerary(actualTrip.tripId);
+  
+          if(itinerary) {
+            newMessageResult.quickReplies.values.push({
+              title: 'Adicionar ao roteiro',
+              value: 'addToItinerary',
+              function: 'addToItinerary',
+              place_id: `${placeFound.place_id}`,
+              marker: JSON.stringify({
+                identifier: placeFound.place_id,
+                title: placeFound.name,
+                description: placeFound.formatted_address,
+                latitude: placeFound.geometry.location.lat,
+                longitude: placeFound.geometry.location.lng,
+              })            
+            })
+          }
+        }
+      }      
+    }
+
+    dialogflowResult.push(newMessageResult);
 
   } catch(e) {
     console.log(e);

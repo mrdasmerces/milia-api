@@ -40,16 +40,30 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
         image: 'https://placeimg.com/274/274/arch',
         quickReplies: {
           type: 'radio',
-          keepIt: false,
+          keepIt: true,
           values: [
             {
               title: 'Ir agora',
               value: 'goToPlace',
               function: 'goToPlace',
+              mapUrl: `http://maps.google.com/?q=${location.geometry.location.lat},${location.geometry.location.lng}`,
               place_id: `${location.place_id}`,
             },
           ],
         },
+        template: {
+          payload: {
+            template_type: "button",
+            text: `${location.name} - ${location.vicinity}`,
+            buttons: [
+              {
+                type: "web_url",
+                url: `http://maps.google.com/?q=${location.geometry.location.lat},${location.geometry.location.lng}`,
+                title: "Ir agora"
+              },
+            ]
+          }        
+        }        
       });
     }
 

@@ -23,7 +23,7 @@ const PlacesIntent = async (result, paramsUser, originChannel) => {
     const minPrice = result.parameters.fields['PRICE'].stringValue[0];
     const maxPrice = result.parameters.fields['PRICE'].stringValue[2];
 
-    const lastUserLocation = paramsUser.lastPosition;
+    const lastUserLocation = JSON.parse(paramsUser.lastPosition);
 
     const locations = await placesService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude, type, radius, minPrice, maxPrice, keyword);
 

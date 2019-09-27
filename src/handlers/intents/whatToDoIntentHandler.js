@@ -18,7 +18,7 @@ const WhatToDoIntent = async (result, paramsUser, originChannel) => {
     locations.data.results = locations.data.results.slice(0, 5);
 
     dialogflowResult.push({
-      text: `Perfeito! Veja os melhores pontos turísticos de ${city}`,
+      text: `Perfeito! Veja os melhores pontos turísticos dessa cidade incrível:`,
     });
 
     for(const location of locations.data.results) {

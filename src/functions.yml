@@ -66,7 +66,17 @@ buildItinerary:
     - http:
         path: /itinerary
         method: post
-        cors: true         
+        cors: true
+
+updateItinerary:
+  functionName: ${self:service}-${self:provider.stage}-update-itinerary
+  handler: src/handlers/updateItinerary.handler
+  warmup: true
+  events:
+    - http:
+        path: /itinerary
+        method: put
+        cors: true                 
 
 milia-signup:
   functionName: ${self:service}-${self:provider.stage}-milia-signup 

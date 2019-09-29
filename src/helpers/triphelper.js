@@ -68,7 +68,7 @@ class TripHelper {
 
     await DynamoHelper.setNewItinerary({itinerary, tripId});
 
-    return { itinerary };
+    return itinerary;
   };  
 
   static async validateTripDates(startDate, endDate, email) {

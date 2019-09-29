@@ -25,9 +25,6 @@ const handler = async (event, context, callback) => {
     const actualTrip = await DynamoHelper.getUserActualTrip(email);
     if(!actualTrip) return callback(null, success(ret));
 
-    const isaValidActualTrip = await TripHelper.isTheCurrentTrip(actualTrip.startTripDate, actualTrip.endTripDate);
-    if(!isaValidActualTrip) return callback(null, success(ret));
-
     ret.actualTrip = actualTrip;
 
     const itinerary = await DynamoHelper.getTripItinerary(actualTrip.tripId);

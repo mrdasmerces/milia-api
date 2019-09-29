@@ -38,7 +38,7 @@ const handler = async (event, context, callback) => {
         ret.imageUri = 'http://en.travelbd.xyz/wp-content/uploads/2018/09/travel-trip-itinerary-together-traveler-1024x576.jpg';
         
         const tripDays = moment(actualTrip.endTripDate).diff(moment(actualTrip.startTripDate), 'days');
-        const actualDay = moment(actualTrip.endTripDate).diff(moment().format(), 'days');
+        const actualDay = moment(moment().format()).diff(actualTrip.startTripDate, 'days');
         ret.cardText = `Dia ${actualDay} de ${tripDays}`;
         
         ret.buttonTitle = 'Explorar';

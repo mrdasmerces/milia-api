@@ -102,8 +102,8 @@ class TripHelper {
   static async isTheCurrentTrip(startDate, endDate) {
     if(!startDate || !endDate) return false;
 
-    const today = moment().hours(23);
-    if(moment(startDate).isBefore(today) && (moment(endDate).isAfter(today))) return true;
+    const today = moment().hours();
+    if(moment(startDate).isSameOrBefore(today) && (moment(endDate).isAfter(today))) return true;
 
     return false;
   };

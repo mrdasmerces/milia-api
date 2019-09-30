@@ -50,8 +50,8 @@ const handler = async (event, context, callback) => {
         ret.imageTitle = `${actualTrip.initialCountry} está chegando!`;
         ret.imageUri = 'https://data.1freewallpapers.com/download/map-road-travel-trip-1024x576.jpg';
         
-        const daysLast = moment(actualTrip.startTripDate).diff(moment().format(), 'days');
-        ret.cardText = `Faltam ${daysLast} dias`;
+        const daysLast = moment(actualTrip.startTripDate).diff(moment().format(), 'days')+1;
+        ret.cardText = `Falta(m) ${daysLast} dia(s)`;
         
         ret.buttonTitle = 'Peça Dicas';
         ret.buttonAction = 'Milia';

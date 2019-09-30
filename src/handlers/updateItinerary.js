@@ -15,9 +15,9 @@ const handler = async (event, context, callback) => {
 
   try {
     const requestBody = JSON.parse(event.body);
-    const { tripId, newItinerary } = requestBody;
+    const { tripId, itinerary } = requestBody;
 
-    const ret = await DynamoHelper.setNewItinerary({newItinerary, tripId}); 
+    const ret = await DynamoHelper.setNewItinerary({itinerary, tripId}); 
 
     return callback(null, success(ret));
 

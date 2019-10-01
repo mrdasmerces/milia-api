@@ -61,29 +61,26 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
     if(paramsUser.email && originChannel === 'App') {
       const actualTrip = await DynamoHelper.getUserActualTrip(paramsUser.email);
       if(actualTrip) {
-        const isaValidActualTrip = await TripHelper.isTheCurrentTrip(actualTrip.startTripDate, actualTrip.endTripDate);
-        if(isaValidActualTrip) {
-          const itinerary = await DynamoHelper.getTripItinerary(actualTrip.tripId);
-  
+        const itinerary = await DynamoHelper.getTripItinerary(actualTrip.tripId);
+        if(itinerary) {
           const actualDayIndex = moment(moment().format()).diff(actualTrip.startTripDate, 'days');
 
           itinerary.itinerary.days = itinerary.itinerary.days.splice(actualDayIndex);
-          if(itinerary) {
-            newMessageResult.quickReplies.values.push({
-              title: 'Adicionar ao roteiro',
-              value: 'Adicione este lugar ao meu roteiro!',
-              function: 'addToItinerary',
-              place_id: `${placeFound.place_id}`,
-              itinerary: JSON.stringify(itinerary),
-              marker: JSON.stringify({
-                identifier: placeFound.place_id,
-                title: placeFound.name,
-                description: placeFound.formatted_address,
-                latitude: placeFound.geometry.location.lat,
-                longitude: placeFound.geometry.location.lng,
-              })            
-            })
-          }
+
+          newMessageResult.quickReplies.values.push({
+            title: 'Adicionar ao roteiro',
+            value: 'Adicione este lugar ao meu roteiro!',
+            function: 'addToItinerary',
+            place_id: `${placeFound.place_id}`,
+            itinerary: JSON.stringify(itinerary),
+            marker: JSON.stringify({
+              identifier: placeFound.place_id,
+              title: placeFound.name,
+              description: placeFound.formatted_address,
+              latitude: placeFound.geometry.location.lat,
+              longitude: placeFound.geometry.location.lng,
+            })            
+          })
         }
       }      
     }

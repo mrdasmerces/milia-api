@@ -94,7 +94,7 @@ const handler = async (event, context, callback) => {
       ...m,
       _id: uuid.v4(),
       sessionId,
-      createdAt: new Date(),
+      createdAt: new Date().toString(),
       user: {
         _id: 2,
         name: 'Milia',
@@ -108,7 +108,7 @@ const handler = async (event, context, callback) => {
       const messagesPromises = [DynamoHelper.setNewUserMessage({
         _id: uuid.v4(),
         sessionId,
-        createdAt: new Date(),
+        createdAt: new Date().toString(),
         user: {
           _id: 1
         },

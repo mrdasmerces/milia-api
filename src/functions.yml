@@ -86,4 +86,14 @@ milia-signup:
     - http:
         path: /milia-signup 
         method: post
-        cors: true    
+        cors: true
+
+google-fulfillment:
+  functionName: ${self:service}-${self:provider.stage}-google-fulfillment
+  handler: src/handlers/googleFulfillment.fulfillment
+  warmup: true
+  events:
+    - http:
+        path: /google-fulfillment
+        method: post
+        cors: true              

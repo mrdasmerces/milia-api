@@ -35,10 +35,10 @@ const handler = async (event, context, callback) => {
       if(await TripHelper.isTheCurrentTrip(actualTrip.startTripDate, actualTrip.endTripDate)) {
 
         ret.imageTitle = `Viagem atual para ${actualTrip.initialCountry}`;
-        ret.imageUri = 'http://en.travelbd.xyz/wp-content/uploads/2018/09/travel-trip-itinerary-together-traveler-1024x576.jpg';
+        ret.imageUri = 'http://en.travelbd.xyz/wp-content/uploads/2018/09/travel-itinerary-together-traveler-1024x576.jpg';
         
-        const tripDays = moment(actualTrip.endTripDate).diff(moment(actualTrip.startTripDate), 'days');
-        const actualDay = moment(moment().format()).diff(actualTrip.startTripDate, 'days');
+        const tripDays = moment(actualTrip.endTripDate).diff(moment(actualTrip.startTripDate), 'days')+1;
+        const actualDay = moment(moment().format()).diff(actualTrip.startTripDate, 'days')+1;
         ret.cardText = `Dia ${actualDay} de ${tripDays}`;
         
         ret.buttonTitle = 'Explorar';

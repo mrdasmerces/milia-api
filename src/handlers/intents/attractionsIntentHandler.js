@@ -3,6 +3,7 @@ const { getAttractionByName, buildPhotoUrl } = require('../../services/attractio
 
 const DynamoHelper      = require('../../helpers/dynamodb')
 const TripHelper      = require('../../helpers/triphelper')
+const moment            = require('moment');
 
 const AttractionsIntent = async (result, paramsUser, originChannel) => {
 
@@ -64,10 +65,13 @@ const AttractionsIntent = async (result, paramsUser, originChannel) => {
         if(isaValidActualTrip) {
           const itinerary = await DynamoHelper.getTripItinerary(actualTrip.tripId);
   
+          const actualDayIndex = moment(moment().format()).diff(actualTrip.startTripDate, 'days');
+
+          itinerary.itinerary.days = itinerary.itinerary.days.splice(actualDayIndex);
           if(itinerary) {
             newMessageResult.quickReplies.values.push({
               title: 'Adicionar ao roteiro',
-              value: 'addToItinerary',
+              value: 'Adicione este lugar ao meu roteiro!',
               function: 'addToItinerary',
               place_id: `${placeFound.place_id}`,
               itinerary: JSON.stringify(itinerary),

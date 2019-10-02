@@ -69,6 +69,47 @@ app.intent('DocumentsIntent', async (conv) => {
   conv.close(responseText);
 });
 
+app.intent('AddToItineraryIntent', async (conv) => {
+  const ret = await intentHandler(conv);
+
+  let responseText = '';
+  for(const textRet of ret) {
+    responseText += ` ${textRet.text} .`;
+  };
+
+  conv.close(responseText);
+});
+
+app.intent('FoodIntent', async (conv) => {
+  let ret = await intentHandler(conv);
+
+  ret = ret.map(m => ({
+    ...m,
+    _id: uuid.v4(),
+    unred: true,
+    createdAt: new Date().toString(),
+    user: {
+      _id: 2,
+      name: 'Milia',
+      avatar: 'https://images-milia.s3.amazonaws.com/Webp.net-resizeimage.jpg',
+    },
+    intent: conv.body.queryResult.intent.displayName,
+    email: 'matheus@gmail.com',
+  }));
+
+  const messagesPromises = [];
+
+  for(const newMessageMilia of ret) {
+    messagesPromises.push(DynamoHelper.setNewUserMessage(newMessageMilia));
+  }
+
+  await Promise.all(messagesPromises); 
+
+  let country = getSlotValue(conv.body.queryResult.parameters, 'geo-country');
+
+  conv.close(`Hum, fiquei com água na boca! Procurei aqui e te mandei as delícias que você pode comer em ${country}. Dê uma olhada agora no xati do meu aplicativo Milia!`)
+});
+
 app.intent('WhatToDoIntent', async (conv) => {
   let ret = await intentHandler(conv);
 

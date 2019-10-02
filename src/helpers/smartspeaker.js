@@ -13,6 +13,7 @@ class SmartSpeakerHelper {
 
     let any = getSlotValue(request.body.queryResult.parameters, 'any');
     let country = getSlotValue(request.body.queryResult.parameters, 'country');
+    let geoCountry = getSlotValue(request.body.queryResult.parameters, 'geo-country');
     let geoCity = getSlotValue(request.body.queryResult.parameters, 'geo-city');
 
     if(any) {
@@ -31,7 +32,13 @@ class SmartSpeakerHelper {
       objParameter.parameters.fields['geo-city'] = {
         stringValue: geoCity,
       }
-    }     
+    }
+    
+    if(geoCountry) {
+      objParameter.parameters.fields['geo-country'] = {
+        stringValue: geoCountry,
+      }
+    }    
 
     return objParameter;
   };

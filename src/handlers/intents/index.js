@@ -12,6 +12,7 @@ const SignupIntent = require('./signupIntentHandler');
 const SuccessSignupIntent = require('./successSignupIntentHandler');
 const DocumentsIntent = require('./documentsIntentHandler');
 const WhatToDoIntent = require('./whatToDoIntentHandler');
+const AddToItineraryIntent = require('./addToItineraryIntentHandler');
 
 module.exports = {
   AttractionsIntent,
@@ -26,4 +27,5 @@ module.exports = {
   SuccessSignupIntent,
   DocumentsIntent,
   WhatToDoIntent,
+  AddToItineraryIntent,
 }

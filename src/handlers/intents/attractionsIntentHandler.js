@@ -2,7 +2,6 @@
 const { getAttractionByName, buildPhotoUrl } = require('../../services/attractions');
 
 const DynamoHelper      = require('../../helpers/dynamodb')
-const TripHelper      = require('../../helpers/triphelper')
 const moment            = require('moment');
 
 const AttractionsIntent = async (result, paramsUser, originChannel) => {

@@ -90,7 +90,7 @@ const handler = async (event, context, callback) => {
       user: {
         _id: 2,
         name: 'Milia',
-        avatar: 'https://placeimg.com/140/140/any',
+        avatar: 'https://images-milia.s3.amazonaws.com/Webp.net-resizeimage.jpg',
       },
     }));
 

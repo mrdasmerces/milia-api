@@ -70,7 +70,13 @@ const SignupIntent = async (result, sessionId) => {
     }
 
     //colocar tempos verbais correto de acordo com as datas da viagem
-    const textConfirmation = `${result.parameters.fields.name.stringValue}, só confirmando: Você vai viajar pra ${result.parameters.fields.country.stringValue} no dia ${moment(result.parameters.fields.trip_date.structValue.fields.startDate.stringValue).format('LL')} com volta prevista em ${moment(result.parameters.fields.trip_date.structValue.fields.endDate.stringValue).format('LL')} e vai começar sua viagem em ${result.parameters.fields.city.stringValue}. Tá tudo certinho?`;
+    const isAActualTrip = await TripHelper.isTheCurrentTrip(result.parameters.fields.trip_date.structValue.fields.startDate.stringValue, result.parameters.fields.trip_date.structValue.fields.endDate.stringValue);
+    let textConfirmation;
+    if(isAActualTrip) {
+      textConfirmation = `${result.parameters.fields.name.stringValue}, só confirmando: Você já está em ${result.parameters.fields.country.stringValue} e começou sua viagem no dia ${moment(result.parameters.fields.trip_date.structValue.fields.startDate.stringValue).format('LL')} com volta prevista em ${moment(result.parameters.fields.trip_date.structValue.fields.endDate.stringValue).format('LL')} e vai começar sua trip ${result.parameters.fields.city.stringValue}. Tá tudo certinho?`;
+    } else {
+      textConfirmation = `${result.parameters.fields.name.stringValue}, só confirmando: Você vai viajar pra ${result.parameters.fields.country.stringValue} no dia ${moment(result.parameters.fields.trip_date.structValue.fields.startDate.stringValue).format('LL')} com volta prevista em ${moment(result.parameters.fields.trip_date.structValue.fields.endDate.stringValue).format('LL')} e vai começar sua viagem em ${result.parameters.fields.city.stringValue}. Tá tudo certinho?`;
+    }
 
     dialogflowResult.push({
       text: textConfirmation,

@@ -1,6 +1,6 @@
 authenticate:
   functionName: ${self:service}-${self:provider.stage}-authenticate
-  handler: src/handlers/authenticate.handler
+  handler: src/handlers/core/authenticate.handler
   warmup: true
   events:
     - http:
@@ -10,7 +10,7 @@ authenticate:
 
 ask-milia:
   functionName: ${self:service}-${self:provider.stage}-ask-milia
-  handler: src/handlers/askMilia.handler
+  handler: src/handlers/chat/askMilia.handler
   warmup: true
   events:
     - http:
@@ -20,7 +20,7 @@ ask-milia:
 
 webhook:
   functionName: ${self:service}-${self:provider.stage}-webhook
-  handler: src/handlers/webhook.handler
+  handler: src/handlers/core/webhook.handler
   warmup: true
   events:
     - http:
@@ -30,7 +30,7 @@ webhook:
 
 resume:
   functionName: ${self:service}-${self:provider.stage}-resume
-  handler: src/handlers/getResume.handler
+  handler: src/handlers/dashboard/getResume.handler
   warmup: true
   events:
     - http:
@@ -40,7 +40,7 @@ resume:
 
 messages:
   functionName: ${self:service}-${self:provider.stage}-messages
-  handler: src/handlers/getMessages.handler
+  handler: src/handlers/chat/getMessages.handler
   warmup: true
   events:
     - http:
@@ -50,7 +50,7 @@ messages:
         
 getItinerary:
   functionName: ${self:service}-${self:provider.stage}-get-itinerary
-  handler: src/handlers/getItinerary.handler
+  handler: src/handlers/itinerary/getItinerary.handler
   warmup: true
   events:
     - http:
@@ -60,7 +60,7 @@ getItinerary:
         
 buildItinerary:
   functionName: ${self:service}-${self:provider.stage}-build-itinerary
-  handler: src/handlers/buildItinerary.handler
+  handler: src/handlers/itinerary/buildItinerary.handler
   warmup: true
   events:
     - http:
@@ -68,9 +68,29 @@ buildItinerary:
         method: post
         cors: true
 
+getTimelinePosts:
+  functionName: ${self:service}-${self:provider.stage}-get-timeline-posts
+  handler: src/handlers/timeline/getTimelinePosts.handler
+  warmup: true
+  events:
+    - http:
+        path: /timeline
+        method: get
+        cors: true
+        
+saveTimelinePost:
+  functionName: ${self:service}-${self:provider.stage}-save-timeline-post
+  handler: src/handlers/timeline/saveTimelinePost.handler
+  warmup: true
+  events:
+    - http:
+        path: /timeline
+        method: post
+        cors: true        
+
 updateItinerary:
   functionName: ${self:service}-${self:provider.stage}-update-itinerary
-  handler: src/handlers/updateItinerary.handler
+  handler: src/handlers/itinerary/updateItinerary.handler
   warmup: true
   events:
     - http:
@@ -80,7 +100,7 @@ updateItinerary:
 
 milia-signup:
   functionName: ${self:service}-${self:provider.stage}-milia-signup 
-  handler: src/handlers/miliaSignup.handler
+  handler: src/handlers/chat/miliaSignup.handler
   warmup: true
   events:
     - http:
@@ -90,7 +110,7 @@ milia-signup:
 
 google-fulfillment:
   functionName: ${self:service}-${self:provider.stage}-google-fulfillment
-  handler: src/handlers/googleFulfillment.fulfillment
+  handler: src/handlers/smartSpeaker/googleFulfillment.fulfillment
   warmup: true
   events:
     - http:

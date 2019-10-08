@@ -1,7 +1,7 @@
 'use strict';
 
-const { ErrorHandler }  = require('../utils/error-handling')
-const { success, permissionDenied }       = require('../utils/response')
+const { ErrorHandler }  = require('../../utils/error-handling')
+const { success, permissionDenied }       = require('../../utils/response')
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;

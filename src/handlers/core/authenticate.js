@@ -6,13 +6,13 @@ const bcrypt = require('bcrypt-nodejs');
 const {
   ItemNotFoundError, 
   MissingParamsError, 
-} = require('../utils/custom-errors');
+} = require('../../utils/custom-errors');
 
-const DynamoHelper      = require('../helpers/dynamodb')
-const { ErrorHandler }  = require('../utils/error-handling')
-const { success }       = require('../utils/response')
-const { generateToken } = require('../utils/generate-token')
-const { messages }      = require('../utils/messages');
+const DynamoHelper      = require('../../helpers/dynamodb')
+const { ErrorHandler }  = require('../../utils/error-handling')
+const { success }       = require('../../utils/response')
+const { generateToken } = require('../../utils/generate-token')
+const { messages }      = require('../../utils/messages');
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;

@@ -6,10 +6,10 @@ const {
 
 const uuid = require('uuid');
 
-const intents = require('../handlers/intents');
-const SmartSpeakerHelper = require('../helpers/smartspeaker')
-const DynamoHelper = require('../helpers/dynamodb')
-const { getSlotValue } = require('../utils/google-home')
+const intents = require('../intents');
+const SmartSpeakerHelper = require('../../helpers/smartspeaker')
+const DynamoHelper = require('../../helpers/dynamodb')
+const { getSlotValue } = require('../../utils/google-home')
 const app = dialogflow();
 
 const intentHandler = async (conv) => {

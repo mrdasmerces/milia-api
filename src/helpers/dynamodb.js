@@ -52,9 +52,21 @@ class AwsHelper {
   };
 
   static async getUserTimeline(idValue) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`;
-    const idKey = 'email';
-    return AwsHelper.findById(idKey, idValue, table);
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline-markers`;
+
+    const params = {
+      TableName : table,
+      IndexName : "emailIndex",
+      KeyConditionExpression: "#email = :v_email",
+      ExpressionAttributeNames:{
+          "#email": "email"
+      },
+      ExpressionAttributeValues: {
+          ":v_email": idValue
+      }
+    };
+
+    return AwsHelper.query(params);
   };
   
   static async setNewUser(obj) {
@@ -78,7 +90,7 @@ class AwsHelper {
   };
   
   static async setNewUserPost(obj) {
-    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`;
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline-markers`;
     return AwsHelper.save(table, obj);
   };
   
@@ -111,7 +123,7 @@ class AwsHelper {
       Key: {
         email,
       },
-      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline`,
+      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline-markers`,
     };
 
     try {

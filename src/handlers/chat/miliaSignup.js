@@ -5,13 +5,13 @@ const uuid = require('uuid');
 
 const {
   MissingParamsError, 
-} = require('../utils/custom-errors');
+} = require('../../utils/custom-errors');
 
-const { ErrorHandler }  = require('../utils/error-handling')
-const { success }       = require('../utils/response')
-const DynamoHelper      = require('../helpers/dynamodb')
+const { ErrorHandler }  = require('../../utils/error-handling')
+const { success }       = require('../../utils/response')
+const DynamoHelper      = require('../../helpers/dynamodb')
 
-const intentHandlers = require('./intents');
+const intentHandlers = require('../intents');
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;

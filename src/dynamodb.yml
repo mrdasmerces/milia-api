@@ -79,13 +79,25 @@ Resources:
   timeline:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:service}-${self:provider.stage}-user-timeline
+      TableName: ${self:service}-${self:provider.stage}-user-timeline-markers
       AttributeDefinitions:
+        - AttributeName: _id
+          AttributeType: S
         - AttributeName: email
-          AttributeType: S               
+          AttributeType: S                                    
       KeySchema:
-        - AttributeName: email
+        - AttributeName: _id
           KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: emailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1                        
       ProvisionedThroughput:
         ReadCapacityUnits: 1
-        WriteCapacityUnits: 1                 
+        WriteCapacityUnits: 1                

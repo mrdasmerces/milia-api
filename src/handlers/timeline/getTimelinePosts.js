@@ -1,8 +1,8 @@
 'use strict';
 
-const { ErrorHandler }  = require('../utils/error-handling')
-const { success }       = require('../utils/response')
-const TripHelper      = require('../helpers/triphelper')
+const { ErrorHandler }  = require('../../utils/error-handling')
+const { success }       = require('../../utils/response')
+const DynamoHelper      = require('../../helpers/dynamodb')
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -14,12 +14,13 @@ const handler = async (event, context, callback) => {
   }
 
   try {
-    const requestBody = JSON.parse(event.body);
-    const { attractionsPerDay, tripId, city, tripDays, hotelLocation } = requestBody;
+    const email = event.queryStringParameters.email;
 
-    const ret = await TripHelper.buildItinerary(attractionsPerDay, tripDays, tripId, city, hotelLocation);
+    let messages = await DynamoHelper.getUserTimeline(email);
 
-    return callback(null, success(ret));
+    messages = messages ? messages : [];
+
+    return callback(null, success(messages));
 
   } catch(e) {
     const errorMessage = await ErrorHandler(e, event, context);

@@ -18,8 +18,8 @@ const EmergencyIntent = async (result, paramsUser, originChannel) => {
       return dialogflowResult;
     }
 
-    const lastUserLocation = JSON.parse(paramsUser.lastPosition);
-    const address = await addressService(lastUserLocation.coords.latitude, lastUserLocation.coords.longitude);
+    //const lastUserLocation = JSON.parse(paramsUser.lastPosition);
+    const address = await addressService(-23.574333, -46.623546);
 
     let countryCode = '';
     for(const adressData of address.data.results) {

@@ -1,9 +1,9 @@
 'use strict';
 
-const { ErrorHandler }  = require('../utils/error-handling')
-const { success }       = require('../utils/response')
-const { byDateAsc }       = require('../utils/sort-functions')
-const DynamoHelper      = require('../helpers/dynamodb')
+const { ErrorHandler }  = require('../../utils/error-handling')
+const { success }       = require('../../utils/response')
+const { byDateAsc }       = require('../../utils/sort-functions')
+const DynamoHelper      = require('../../helpers/dynamodb')
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;

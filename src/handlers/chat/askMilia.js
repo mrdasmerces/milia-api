@@ -6,14 +6,15 @@ const moment = require('moment');
 
 const {
   MissingParamsError, 
-} = require('../utils/custom-errors');
+} = require('../../utils/custom-errors');
 
-const { ErrorHandler }  = require('../utils/error-handling')
-const { success }       = require('../utils/response')
-const DynamoHelper      = require('../helpers/dynamodb')
+const { ErrorHandler }  = require('../../utils/error-handling')
+const { success }       = require('../../utils/response')
+const DynamoHelper      = require('../../helpers/dynamodb')
+const TripHelper      = require('../../helpers/triphelper')
 
-const intentHandlers = require('./intents');
-const channels = require('./channels');
+const intentHandlers = require('../intents');
+const channels = require('../channels');
 
 const handler = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -90,6 +91,14 @@ const handler = async (event, context, callback) => {
       dialogflowResult.push({text: 'Hum, não entendi, pode repetir por favor? :)'});
     }
 
+    if(paramsUser.email) {
+      const actualTrip = await DynamoHelper.getUserActualTrip(paramsUser.email);
+      
+      if(actualTrip && await TripHelper.isTheCurrentTrip(actualTrip.startTripDate, actualTrip.endTripDate)) {
+        paramsUser.tripId = actualTrip.tripId;
+      }
+    }
+
     dialogflowResult = dialogflowResult.map(m => ({
       ...m,
       _id: uuid.v4(),
@@ -102,6 +111,7 @@ const handler = async (event, context, callback) => {
       },
       intent: result.intent ? result.intent.displayName : 'WelcomeIntent',
       email: paramsUser.email,
+      tripId: paramsUser.tripId,
     }));
 
     if(paramsUser.email) {
@@ -114,6 +124,7 @@ const handler = async (event, context, callback) => {
         },
         text: queryText,
         email: paramsUser.email,
+        tripId: paramsUser.tripId,
         intent: result.intent ? result.intent.displayName : 'WelcomeIntent'
       })];
 

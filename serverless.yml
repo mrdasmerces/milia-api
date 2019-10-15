@@ -2,6 +2,7 @@ service: milia-api
 
 plugins:
   - serverless-plugin-warmup
+  - serverless-offline
 
 custom: 
   warmup:
@@ -15,16 +16,23 @@ custom:
 provider:
   name: aws
   runtime: nodejs10.x
-  profile: ${self:provider.stage}
   stage: ${opt:stage, 'dev'}
+  profile: ${self:provider.stage}
   region: us-east-1
   memorySize: 256
-  timeout: 10
+  timeout: 30
   environment:
     SECRET_TOKEN: latheus
     REGION: ${self:provider.region}
     SERVERLESS_SERVICE: ${self:service}
     STAGE: ${self:provider.stage}
+    GOOGLE_APPLICATION_CREDENTIALS: "./src/credentials/google.json"
+    DIALOGFLOW_PROJECT_ID: translate-2-kgnsoy
+    GOOGLE_PLACES_KEY: AIzaSyA1UUQgbp4x8tOCw6_YhUkfgJj5-dfxkhU
+    GOOGLE_MAPS_KEY: AIzaSyCbhJQ9YTC73K1hRq0vH6fGkwBnW0BjeYc
+    TELEGRAM_HASH: 881772771:AAHIZ_8fC9bO3_F4wo1UeP-c-JZuIDB0qOk
+    TIMEOUT: 20000
+    ITINERARY_TYPES: Histórico,Desbravador,Gastronômico
   iamRoleStatements:
   - Effect: Allow
     Action:

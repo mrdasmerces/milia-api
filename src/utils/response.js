@@ -4,13 +4,13 @@ const build = (statusCode, body) => ({
     'Access-Control-Allow-Credentials': true
   },
   statusCode,
-  body
+  body: JSON.stringify(body),
 });
 
 const success = body => build(200, body);
 const businessRuleError = body => build(422, body);
 const tokenRefreshError = body => build(400, body);
-const permissionDenied = body => build(401, body);
+const permissionDenied = body => build(403, body);
 const notFound = body => build(404, body);
 const failure = body => build(500, body);
 const badData = () => build(422, {

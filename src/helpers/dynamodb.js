@@ -13,7 +13,125 @@ class AwsHelper {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;
     const idKey = 'email';
     return AwsHelper.findById(idKey, idValue, table);
+  };
+
+  static async getUserSession(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`;
+    const idKey = 'accessToken';
+    return AwsHelper.findById(idKey, idValue, table);
+  };
+
+  static async getUserActualTrip(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-actual-trip`;
+    const idKey = 'email';
+    return AwsHelper.findById(idKey, idValue, table);
+  };
+
+  static async getTripItinerary(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-trip-itinerary`;
+    const idKey = 'tripId';
+    return AwsHelper.findById(idKey, idValue, table);
+  };  
+
+  static async getUserMessages(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-messages`;
+
+    const params = {
+      TableName : table,
+      IndexName : "emailIndex",
+      KeyConditionExpression: "#email = :v_email",
+      ExpressionAttributeNames:{
+          "#email": "email"
+      },
+      ExpressionAttributeValues: {
+          ":v_email": idValue
+      }
+    };
+
+    return AwsHelper.query(params);
+  };
+
+  static async getUserTimeline(idValue) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline-markers`;
+
+    const params = {
+      TableName : table,
+      IndexName : "emailIndex",
+      KeyConditionExpression: "#email = :v_email",
+      ExpressionAttributeNames:{
+          "#email": "email"
+      },
+      ExpressionAttributeValues: {
+          ":v_email": idValue
+      }
+    };
+
+    return AwsHelper.query(params);
+  };
+  
+  static async setNewUser(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;
+    return AwsHelper.save(table, obj);
+  };  
+
+  static async setNewUserMessage(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-messages`;
+    return AwsHelper.save(table, obj);
+  };    
+  
+  static async setUserSession(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`;
+    return AwsHelper.save(table, obj);
+  };
+  
+  static async saveNewTrip(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-actual-trip`;
+    return AwsHelper.save(table, obj);
+  };
+  
+  static async setNewUserPost(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline-markers`;
+    return AwsHelper.save(table, obj);
+  };
+  
+  static async setNewItinerary(obj) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-trip-itinerary`;
+    return AwsHelper.save(table, obj);
+  };   
+
+  static async deleteUserSession(accessToken) {
+
+    AwsHelper.dynamodb = AwsHelper.getDynamo();
+    const params = {
+      Key: {
+        accessToken,
+      },
+      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`,
+    };
+
+    try {
+      await AwsHelper.dynamodb.delete(params).promise();
+    } catch (error) {
+      throw new DbConnectionError(error.message);
+    }
   }
+  
+  static async deleteUserPost(email) {
+
+    AwsHelper.dynamodb = AwsHelper.getDynamo();
+    const params = {
+      Key: {
+        email,
+      },
+      TableName: `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-timeline-markers`,
+    };
+
+    try {
+      await AwsHelper.dynamodb.delete(params).promise();
+    } catch (error) {
+      throw new DbConnectionError(error.message);
+    }
+  }  
 
   static async updateUserAccessToken(email, accessToken) {
     const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-users`;
@@ -27,6 +145,44 @@ class AwsHelper {
       UpdateExpression: "set accessToken = :accessToken",
       ExpressionAttributeValues:{
         ":accessToken": accessToken,
+      },
+      ReturnValues: "UPDATED_NEW"
+    };
+
+    return await AwsHelper.update(params);
+  }
+  
+  static async updateSession(sessionId, dynamoContext) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-user-session`;
+    const idKey = 'accessToken';
+
+    const params = {
+      TableName: table,
+      Key: {
+        [idKey]: sessionId,
+      },
+      UpdateExpression: "set dynamoContext = :dynamoContext",
+      ExpressionAttributeValues:{
+        ":dynamoContext": dynamoContext,
+      },
+      ReturnValues: "UPDATED_NEW"
+    };
+
+    return await AwsHelper.update(params);
+  }
+  
+  static async updateItinerary(tripId, itinerary) {
+    const table = `${process.env.SERVERLESS_SERVICE}-${process.env.STAGE}-trip-itinerary`;
+    const idKey = 'tripId';
+
+    const params = {
+      TableName: table,
+      Key: {
+        [idKey]: tripId,
+      },
+      UpdateExpression: "set itinerary = :itinerary",
+      ExpressionAttributeValues:{
+        ":itinerary": itinerary,
       },
       ReturnValues: "UPDATED_NEW"
     };
@@ -82,12 +238,32 @@ class AwsHelper {
     }
 
     if (item == null || item.Item == null) {
-      throw new ItemNotFoundError();
+      return null;
     } else {
       return item.Item;
     }
 
   }
+
+  static async query(params) {
+
+    AwsHelper.dynamodb = AwsHelper.getDynamo();
+
+    let item = {};
+
+    try {
+      item = await AwsHelper.dynamodb.query(params).promise();
+    } catch (error) {
+      throw new DbConnectionError(error.message);
+    }
+
+    if (item == null || item.Items == null) {
+      return null;
+    } else {
+      return item.Items;
+    }
+
+  }  
 
   static getDynamo() {
 

@@ -27,6 +27,12 @@ const handler = async (event, context, callback) => {
       buttonAction: 'Milia',
       timelineText: 'Nenhum marco no diário',
       miliaText: 'A Milia vai tornar sua viagem mais legal',
+      details: {
+        messages: `Nenhuma mensagem com a Milia`,
+        placesVisited: 'Nenhuma experiência até agora',
+        placesToVisit: 'Nenhum lugar para conhecer',
+        timeline: 'Nenhum marco até agora',
+      }
     }
 
     const actualTrip = await DynamoHelper.getUserActualTrip(email);
@@ -104,12 +110,10 @@ const handler = async (event, context, callback) => {
 
           ret.buttonTitle = 'Ver detalhes';
           ret.buttonAction = 'Modal';
-          ret.details = {
-            messages: messages.length > 0 ? `${messages.length} mensagens com a Milia` : `Nenhuma mensagem com a Milia`,
-            placesVisited: placesVisited > 0 ? `${placesVisited} novas experiências` : 'Nenhuma experiência até agora',
-            placesToVisit: placesToVisit > 0 ? `${placesToVisit} lugares para conhecer` : 'Nenhum lugar para conhecer',
-            timeline: timeline && timeline.length > 0 ? `${timeline.length} marcos importantes` : 'Nenhum marco até agora',
-          }          
+          ret.details.messages = messages.length > 0 ? `${messages.length} mensagens com a Milia` : `Nenhuma mensagem com a Milia`;
+          ret.details.placesVisited = placesVisited > 0 ? `${placesVisited} novas experiências` : 'Nenhuma experiência até agora';
+          ret.details.placesToVisit = placesToVisit > 0 ? `${placesToVisit} lugares para conhecer` : 'Nenhum lugar para conhecer';
+          ret.details.timeline = timeline && timeline.length > 0 ? `${timeline.length} marcos importantes` : 'Nenhum marco até agora';   
         }
       }
 
